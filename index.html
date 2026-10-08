@@ -89,11 +89,11 @@
 
   <div class="stats-grid">
     <div class="stat-card">
-      <div class="stat-num" id="statTotalVideos">259</div>
+      <div class="stat-num" id="statTotalVideos">269</div>
       <div class="stat-label">Videos Tracked</div>
     </div>
     <div class="stat-card">
-      <div class="stat-num" id="statBooksUsed" style="color: #0284c7;">59 / 66</div>
+      <div class="stat-num" id="statBooksUsed" style="color: #0284c7;">66 / 66</div>
       <div class="stat-label">Bible Books Covered</div>
     </div>
     <div class="stat-card">
@@ -110,7 +110,7 @@
   <div class="card">
     <div class="card-title">🔍 Check Passage Before Recording</div>
     <div class="search-row">
-      <input type="text" id="searchInput" placeholder="Type book, chapter, or verse (e.g., Romans 8:28, James 1:5, Exodus 14)..." oninput="checkScripture()">
+      <input type="text" id="searchInput" placeholder="Type book, chapter, or verse (e.g., Romans 8:28, Numbers 6, Judges 6)..." oninput="checkScripture()">
       <button class="btn" onclick="checkScripture()">Check Passage</button>
     </div>
     <div id="resultBox" class="alert"></div>
@@ -123,8 +123,8 @@
       Enter new videos here. Checks for duplicate passages live as you type.
     </p>
     <div class="form-grid">
-      <input type="text" id="newVid" placeholder="Video # (e.g., V260)">
-      <input type="text" id="newRef" placeholder="Passage (e.g., Leviticus 19:18)" oninput="checkNewVideoInput()">
+      <input type="text" id="newVid" placeholder="Video # (e.g., V270)">
+      <input type="text" id="newRef" placeholder="Passage (e.g., Psalm 100:1)" oninput="checkNewVideoInput()">
       <input type="text" id="newTitle" placeholder="Title / Topic">
       <input type="date" id="newDate">
       <select id="newStatus">
@@ -140,7 +140,7 @@
   <!-- VIDEO DIRECTORY TABLE -->
   <div class="card">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
-      <div class="card-title" style="margin-bottom: 0;">Full Video Directory (<span id="tableCount">259</span> entries)</div>
+      <div class="card-title" style="margin-bottom: 0;">Full Video Directory (<span id="tableCount">269</span> entries)</div>
       <input type="text" id="filterInput" placeholder="Filter directory..." oninput="filterTable()" style="max-width: 260px; padding: 7px 12px; font-size: 13px;">
     </div>
     <div class="table-container">
@@ -425,7 +425,17 @@ const INITIAL_DATA = [
   {"video": "V256", "title": "Flawless and Faithful", "ref": "2 Samuel 22:31", "date": "2026-10-18", "status": "Pending"},
   {"video": "V257", "title": "The Gentle Whisper of God", "ref": "1 Kings 19:11-12", "date": "2026-10-19", "status": "Pending"},
   {"video": "V258", "title": "Salvation Comes From the Lord", "ref": "Jonah 2:9", "date": "2026-10-20", "status": "Pending"},
-  {"video": "V259", "title": "Press On to Know the Lord", "ref": "Hosea 6:3", "date": "2026-10-21", "status": "Pending"}
+  {"video": "V259", "title": "Press On to Know the Lord", "ref": "Hosea 6:3", "date": "2026-10-21", "status": "Pending"},
+  {"video": "V260", "title": "The Lord Bless You and Keep You", "ref": "Numbers 6:24-26", "date": "2026-10-22", "status": "Pending"},
+  {"video": "V261", "title": "Love Your Neighbor as Yourself", "ref": "Leviticus 19:18", "date": "2026-10-23", "status": "Pending"},
+  {"video": "V262", "title": "The Lord Is With You, Mighty Warrior", "ref": "Judges 6:12", "date": "2026-10-24", "status": "Pending"},
+  {"video": "V263", "title": "Those With Us Are More", "ref": "2 Kings 6:16", "date": "2026-10-25", "status": "Pending"},
+  {"video": "V264", "title": "Seek the Lord and His Strength", "ref": "1 Chronicles 16:11", "date": "2026-10-26", "status": "Pending"},
+  {"video": "V265", "title": "Yours, Lord, Is the Greatness", "ref": "1 Chronicles 29:11", "date": "2026-10-27", "status": "Pending"},
+  {"video": "V266", "title": "Devoted to God’s Word", "ref": "Ezra 7:10", "date": "2026-10-28", "status": "Pending"},
+  {"video": "V267", "title": "The Winter Is Past", "ref": "Song of Solomon 2:11-12", "date": "2026-10-29", "status": "Pending"},
+  {"video": "V268", "title": "The Eternal God Is Your Refuge", "ref": "Deuteronomy 33:27", "date": "2026-10-30", "status": "Pending"},
+  {"video": "V269", "title": "Under the Shadow of the Almighty", "ref": "Psalm 91:1-2", "date": "2026-10-31", "status": "Pending"}
 ];
 
 function normalizeBook(name) {
@@ -625,7 +635,7 @@ function addNewVideo() {
   const status = document.getElementById('newStatus').value;
 
   if (!vid || !ref) {
-    alert("Please provide at least a Video # (e.g., V260) and a Scripture Reference.");
+    alert("Please provide at least a Video # (e.g., V270) and a Scripture Reference.");
     return;
   }
 
@@ -706,7 +716,7 @@ function importCSVFile(event) {
 }
 
 function resetToInitialData() {
-  if (confirm("Reset back to initial 259 videos? Any manually entered videos will be replaced.")) {
+  if (confirm("Reset back to initial 269 videos? Any manually entered videos will be replaced.")) {
     videos = [...INITIAL_DATA];
     saveVideos();
   }
