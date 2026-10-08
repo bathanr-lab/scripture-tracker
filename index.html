@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ministry Scripture Tracker & Planner</title>
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#2563eb">
 <style>
   :root {
     --primary: #2563eb;
@@ -19,29 +22,29 @@
     --success-bg: #f0fdf4;
   }
   * { box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 24px; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
   .container { max-width: 1060px; margin: 0 auto; }
-  .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+  .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
   h1 { margin: 0; font-size: 24px; color: var(--text); }
-  .card { background: var(--card-bg); border-radius: 12px; padding: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid var(--border); margin-bottom: 20px; }
+  .card { background: var(--card-bg); border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid var(--border); margin-bottom: 18px; }
   .card-title { font-size: 17px; font-weight: 700; margin-top: 0; margin-bottom: 14px; color: #1e293b; }
   
-  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin-bottom: 20px; }
-  .stat-card { background: var(--card-bg); border-radius: 10px; padding: 18px; border: 1px solid var(--border); text-align: center; }
-  .stat-num { font-size: 28px; font-weight: 800; color: var(--primary); }
-  .stat-label { font-size: 13px; color: var(--text-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 18px; }
+  .stat-card { background: var(--card-bg); border-radius: 10px; padding: 16px; border: 1px solid var(--border); text-align: center; }
+  .stat-num { font-size: 26px; font-weight: 800; color: var(--primary); }
+  .stat-label { font-size: 12px; color: var(--text-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
 
-  .search-row { display: flex; gap: 10px; margin-bottom: 12px; }
+  .search-row { display: flex; gap: 10px; margin-bottom: 10px; }
   input[type="text"], input[type="date"], select { padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; outline: none; background: white; }
   input[type="text"]:focus, input[type="date"]:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.15); }
   .search-row input[type="text"] { flex: 1; padding: 12px 14px; font-size: 15px; }
   
-  .btn { padding: 10px 18px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background 0.15s ease; font-size: 14px; }
+  .btn { padding: 10px 16px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background 0.15s ease; font-size: 14px; }
   .btn:hover { background: var(--primary-hover); }
   .btn-secondary { background: #475569; }
   .btn-secondary:hover { background: #334155; }
 
-  .alert { padding: 16px; border-radius: 8px; font-size: 15px; display: none; line-height: 1.5; margin-top: 10px; }
+  .alert { padding: 14px; border-radius: 8px; font-size: 14px; display: none; line-height: 1.5; margin-top: 10px; }
   .alert-warning { background: var(--danger-bg); border: 1px solid #fecaca; color: #991b1b; }
   .alert-success { background: var(--success-bg); border: 1px solid #bbf7d0; color: #166534; }
 
@@ -58,7 +61,6 @@
   .badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; }
   .badge-dup { background: #fee2e2; color: #b91c1c; }
 
-  /* Status Dropdown inside Table */
   .status-select { font-size: 13px; font-weight: 600; padding: 4px 8px; border-radius: 6px; border: 1px solid transparent; cursor: pointer; }
   .status-scheduled { background: #dcfce7; color: #15803d; border-color: #bbf7d0; }
   .status-pending { background: #fef3c7; color: #b45309; border-color: #fde68a; }
@@ -66,7 +68,7 @@
 
   .action-btn { background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 16px; padding: 4px 8px; }
   .action-btn:hover { color: #dc2626; }
-  .backup-bar { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; font-size: 13px; color: var(--text-muted); }
+  .backup-bar { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; font-size: 13px; color: var(--text-muted); flex-wrap: wrap; gap: 8px; }
 </style>
 </head>
 <body>
@@ -77,19 +79,21 @@
       <h1>Ministry Scripture Tracker</h1>
       <p style="margin: 4px 0 0; color: var(--text-muted);">Instant Verse Lookup & Video Catalog</p>
     </div>
-    <div>
-      <button class="btn btn-secondary" onclick="exportToCSV()" style="font-size: 13px; padding: 9px 14px;">⬇️ Export Tracker to CSV</button>
-      <button class="btn btn-secondary" onclick="resetToInitialData()" style="font-size: 13px; padding: 9px 14px; margin-left: 6px;">🔄 Reset to Initial 249</button>
+    <div style="display:flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+      <input type="file" id="csvFileInput" accept=".csv" style="display: none;" onchange="importCSVFile(event)">
+      <button class="btn btn-secondary" onclick="document.getElementById('csvFileInput').click()" style="font-size: 13px; padding: 8px 12px;">📁 Import CSV</button>
+      <button class="btn btn-secondary" onclick="exportToCSV()" style="font-size: 13px; padding: 8px 12px;">⬇️ Export CSV</button>
+      <button class="btn btn-secondary" onclick="resetToInitialData()" style="font-size: 13px; padding: 8px 12px;">🔄 Reset</button>
     </div>
   </div>
 
   <div class="stats-grid">
     <div class="stat-card">
-      <div class="stat-num" id="statTotalVideos">249</div>
+      <div class="stat-num" id="statTotalVideos">259</div>
       <div class="stat-label">Videos Tracked</div>
     </div>
     <div class="stat-card">
-      <div class="stat-num" id="statBooksUsed" style="color: #0284c7;">49 / 66</div>
+      <div class="stat-num" id="statBooksUsed" style="color: #0284c7;">59 / 66</div>
       <div class="stat-label">Bible Books Covered</div>
     </div>
     <div class="stat-card">
@@ -106,7 +110,7 @@
   <div class="card">
     <div class="card-title">🔍 Check Passage Before Recording</div>
     <div class="search-row">
-      <input type="text" id="searchInput" placeholder="Type book, chapter, or verse (e.g., Romans 8:28, James 1:5, Psalm 23)..." oninput="checkScripture()">
+      <input type="text" id="searchInput" placeholder="Type book, chapter, or verse (e.g., Romans 8:28, James 1:5, Exodus 14)..." oninput="checkScripture()">
       <button class="btn" onclick="checkScripture()">Check Passage</button>
     </div>
     <div id="resultBox" class="alert"></div>
@@ -116,11 +120,11 @@
   <div class="card">
     <div class="card-title">➕ Add New Video to Tracker</div>
     <p style="margin-top: -6px; margin-bottom: 14px; font-size: 13px; color: var(--text-muted);">
-      Whenever you record or schedule a new daily video, enter it here. It checks for duplicates live as you type.
+      Enter new videos here. Checks for duplicate passages live as you type.
     </p>
     <div class="form-grid">
-      <input type="text" id="newVid" placeholder="Video # (e.g., V250)">
-      <input type="text" id="newRef" placeholder="Passage (e.g., Hebrews 11:1)" oninput="checkNewVideoInput()">
+      <input type="text" id="newVid" placeholder="Video # (e.g., V260)">
+      <input type="text" id="newRef" placeholder="Passage (e.g., Leviticus 19:18)" oninput="checkNewVideoInput()">
       <input type="text" id="newTitle" placeholder="Title / Topic">
       <input type="date" id="newDate">
       <select id="newStatus">
@@ -135,9 +139,9 @@
 
   <!-- VIDEO DIRECTORY TABLE -->
   <div class="card">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-      <div class="card-title" style="margin-bottom: 0;">Full Video Directory (<span id="tableCount">249</span> entries)</div>
-      <input type="text" id="filterInput" placeholder="Filter table..." oninput="filterTable()" style="max-width: 260px; padding: 7px 12px; font-size: 13px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+      <div class="card-title" style="margin-bottom: 0;">Full Video Directory (<span id="tableCount">259</span> entries)</div>
+      <input type="text" id="filterInput" placeholder="Filter directory..." oninput="filterTable()" style="max-width: 260px; padding: 7px 12px; font-size: 13px;">
     </div>
     <div class="table-container">
       <table id="videosTable">
@@ -147,7 +151,7 @@
             <th style="width: 170px;">Scripture Reference</th>
             <th>Title / Topic</th>
             <th style="width: 120px;">Scheduled Date</th>
-            <th style="width: 140px;">Status (Click to edit)</th>
+            <th style="width: 140px;">Status</th>
             <th style="width: 50px;">Delete</th>
           </tr>
         </thead>
@@ -155,8 +159,8 @@
       </table>
     </div>
     <div class="backup-bar">
-      <span>💾 Status changes are saved automatically in your browser.</span>
-      <span>Click "Export Tracker to CSV" anytime to keep backups.</span>
+      <span>💾 Changes save automatically on this device.</span>
+      <span>Use "Export CSV" and "Import CSV" to sync between phone and computer.</span>
     </div>
   </div>
 </div>
@@ -411,7 +415,17 @@ const INITIAL_DATA = [
   {"video": "V246", "title": "The Lord Hears My Cry", "ref": "Psalm 6:9", "date": "2026-10-08", "status": "Pending"},
   {"video": "V247", "title": "Committed to God", "ref": "Ruth 1:16-17", "date": "2026-10-09", "status": "Pending"},
   {"video": "V248", "title": "Blessed to Be a Blessing", "ref": "Genesis 12:2-3", "date": "2026-10-10", "status": "Pending"},
-  {"video": "V249", "title": "God’s Covenant Promise", "ref": "Genesis 9:13", "date": "2026-10-11", "status": "Pending"}
+  {"video": "V249", "title": "God’s Covenant Promise", "ref": "Genesis 9:13", "date": "2026-10-11", "status": "Pending"},
+  {"video": "V250", "title": "The Lord Will Fight for You", "ref": "Exodus 14:14", "date": "2026-10-12", "status": "Pending"},
+  {"video": "V251", "title": "Fight the Good Fight of Faith", "ref": "1 Timothy 6:12", "date": "2026-10-13", "status": "Pending"},
+  {"video": "V252", "title": "No More Tears", "ref": "Revelation 21:4", "date": "2026-10-14", "status": "Pending"},
+  {"video": "V253", "title": "Led by His Spirit", "ref": "Zechariah 4:6", "date": "2026-10-15", "status": "Pending"},
+  {"video": "V254", "title": "My Redeemer Lives", "ref": "Job 19:25", "date": "2026-10-16", "status": "Pending"},
+  {"video": "V255", "title": "For Such a Time as This", "ref": "Esther 4:14", "date": "2026-10-17", "status": "Pending"},
+  {"video": "V256", "title": "Flawless and Faithful", "ref": "2 Samuel 22:31", "date": "2026-10-18", "status": "Pending"},
+  {"video": "V257", "title": "The Gentle Whisper of God", "ref": "1 Kings 19:11-12", "date": "2026-10-19", "status": "Pending"},
+  {"video": "V258", "title": "Salvation Comes From the Lord", "ref": "Jonah 2:9", "date": "2026-10-20", "status": "Pending"},
+  {"video": "V259", "title": "Press On to Know the Lord", "ref": "Hosea 6:3", "date": "2026-10-21", "status": "Pending"}
 ];
 
 function normalizeBook(name) {
@@ -456,9 +470,12 @@ function findMatches(queryText) {
 function loadVideos() {
   const saved = localStorage.getItem('ministry_videos_tracker');
   if (saved) {
-    try { return JSON.parse(saved); } catch(e) { return INITIAL_DATA; }
+    try {
+      const parsed = JSON.parse(saved);
+      if (parsed.length >= INITIAL_DATA.length) return parsed;
+    } catch(e) {}
   }
-  return INITIAL_DATA;
+  return [...INITIAL_DATA];
 }
 
 let videos = loadVideos();
@@ -608,7 +625,7 @@ function addNewVideo() {
   const status = document.getElementById('newStatus').value;
 
   if (!vid || !ref) {
-    alert("Please provide at least a Video # (e.g., V250) and a Scripture Reference.");
+    alert("Please provide at least a Video # (e.g., V260) and a Scripture Reference.");
     return;
   }
 
@@ -658,8 +675,38 @@ function exportToCSV() {
   document.body.removeChild(link);
 }
 
+function importCSVFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const text = e.target.result;
+    const lines = text.split(/\r\n|\n/).filter(l => l.trim().length > 0);
+    if (lines.length < 2) return;
+    const parsed = [];
+    for (let i = 1; i < lines.length; i++) {
+      const cols = lines[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || lines[i].split(',');
+      if (cols && cols.length >= 2) {
+        parsed.push({
+          video: cols[0] ? cols[0].replace(/"/g, '').trim() : '',
+          ref: cols[1] ? cols[1].replace(/"/g, '').trim() : '',
+          title: cols[2] ? cols[2].replace(/"/g, '').trim() : '',
+          date: cols[3] ? cols[3].replace(/"/g, '').trim() : '',
+          status: cols[4] ? cols[4].replace(/"/g, '').trim() : 'Pending'
+        });
+      }
+    }
+    if (parsed.length > 0) {
+      videos = parsed;
+      saveVideos();
+      alert(`Imported ${parsed.length} videos successfully!`);
+    }
+  };
+  reader.readAsText(file);
+}
+
 function resetToInitialData() {
-  if (confirm("Reset back to original 249 videos? Any manually entered videos will be replaced.")) {
+  if (confirm("Reset back to initial 259 videos? Any manually entered videos will be replaced.")) {
     videos = [...INITIAL_DATA];
     saveVideos();
   }
