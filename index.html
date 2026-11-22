@@ -1,732 +1,549 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ministry Scripture Tracker & Planner</title>
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#2563eb">
-<style>
-  :root {
-    --primary: #2563eb;
-    --primary-hover: #1d4ed8;
-    --bg: #f8fafc;
-    --card-bg: #ffffff;
-    --text: #0f172a;
-    --text-muted: #64748b;
-    --border: #e2e8f0;
-    --danger: #dc2626;
-    --danger-bg: #fef2f2;
-    --success: #16a34a;
-    --success-bg: #f0fdf4;
-  }
-  * { box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
-  .container { max-width: 1060px; margin: 0 auto; }
-  .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
-  h1 { margin: 0; font-size: 24px; color: var(--text); }
-  .card { background: var(--card-bg); border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid var(--border); margin-bottom: 18px; }
-  .card-title { font-size: 17px; font-weight: 700; margin-top: 0; margin-bottom: 14px; color: #1e293b; }
-  
-  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 18px; }
-  .stat-card { background: var(--card-bg); border-radius: 10px; padding: 16px; border: 1px solid var(--border); text-align: center; }
-  .stat-num { font-size: 26px; font-weight: 800; color: var(--primary); }
-  .stat-label { font-size: 12px; color: var(--text-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
-
-  .search-row { display: flex; gap: 10px; margin-bottom: 10px; }
-  input[type="text"], input[type="date"], select { padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; outline: none; background: white; }
-  input[type="text"]:focus, input[type="date"]:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.15); }
-  .search-row input[type="text"] { flex: 1; padding: 12px 14px; font-size: 15px; }
-  
-  .btn { padding: 10px 16px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background 0.15s ease; font-size: 14px; }
-  .btn:hover { background: var(--primary-hover); }
-  .btn-secondary { background: #475569; }
-  .btn-secondary:hover { background: #334155; }
-
-  .alert { padding: 14px; border-radius: 8px; font-size: 14px; display: none; line-height: 1.5; margin-top: 10px; }
-  .alert-warning { background: var(--danger-bg); border: 1px solid #fecaca; color: #991b1b; }
-  .alert-success { background: var(--success-bg); border: 1px solid #bbf7d0; color: #166534; }
-
-  .form-grid { display: grid; grid-template-columns: 1fr 1.5fr 1.5fr 1.2fr 1.2fr auto; gap: 10px; align-items: center; }
-  @media (max-width: 860px) {
-    .form-grid { grid-template-columns: 1fr; }
-  }
-
-  .table-container { max-height: 480px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; }
-  table { width: 100%; border-collapse: collapse; font-size: 14px; text-align: left; }
-  th, td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
-  th { background: #f8fafc; font-weight: 600; color: #475569; position: sticky; top: 0; z-index: 1; }
-  tr:hover { background: #f8fafc; }
-  .badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; }
-  .badge-dup { background: #fee2e2; color: #b91c1c; }
-
-  .status-select { font-size: 13px; font-weight: 600; padding: 4px 8px; border-radius: 6px; border: 1px solid transparent; cursor: pointer; }
-  .status-scheduled { background: #dcfce7; color: #15803d; border-color: #bbf7d0; }
-  .status-pending { background: #fef3c7; color: #b45309; border-color: #fde68a; }
-  .status-exported { background: #e0f2fe; color: #0369a1; border-color: #bae6fd; }
-
-  .action-btn { background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 16px; padding: 4px 8px; }
-  .action-btn:hover { color: #dc2626; }
-  .backup-bar { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; font-size: 13px; color: var(--text-muted); flex-wrap: wrap; gap: 8px; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ministry Scripture Tracker</title>
+  <style>
+    :root {
+      --bg: #f4f6f9;
+      --card: #ffffff;
+      --primary: #1e3a8a;
+      --primary-hover: #172554;
+      --accent: #2563eb;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --green-bg: #dcfce7;
+      --green-text: #166534;
+      --red-bg: #fee2e2;
+      --red-text: #991b1b;
+      --amber-bg: #fef3c7;
+      --amber-text: #92400e;
+      --blue-bg: #dbeafe;
+      --blue-text: #1e40af;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding: 20px; line-height: 1.5; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 15px; margin-bottom: 20px; }
+    .header h1 { font-size: 1.65rem; color: var(--primary); }
+    .header p { color: var(--muted); font-size: 0.92rem; }
+    .header-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    button, .btn {
+      background: var(--primary); color: #fff; border: none; padding: 9px 14px; border-radius: 8px;
+      font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: 0.15s; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+    }
+    button:hover, .btn:hover { background: var(--primary-hover); }
+    .btn-secondary { background: #fff; color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { background: #f9fafb; }
+    .btn-danger { background: #fee2e2; color: #991b1b; padding: 5px 10px; font-size: 0.8rem; }
+    .btn-danger:hover { background: #fecaca; }
+    .btn-edit { background: #e0e7ff; color: #1e40af; padding: 5px 10px; font-size: 0.8rem; }
+    .btn-edit:hover { background: #c7d2fe; }
+    .btn-save { background: #16a34a; color: #fff; padding: 5px 10px; font-size: 0.8rem; }
+    .btn-save:hover { background: #15803d; }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 20px; }
+    .stat-card { background: var(--card); padding: 16px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+    .stat-val { font-size: 1.6rem; font-weight: 700; color: var(--primary); }
+    .stat-label { font-size: 0.82rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-top: 2px; }
+    .card { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+    .card-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 12px; color: var(--text); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; align-items: end; }
+    input, select {
+      width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 0.92rem; background: #fff; color: var(--text);
+    }
+    input:focus, select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37,99,235,0.12); }
+    .banner { margin-top: 12px; padding: 12px 14px; border-radius: 8px; font-size: 0.92rem; font-weight: 500; display: none; }
+    .banner.available { background: var(--green-bg); color: var(--green-text); border: 1px solid #bbf7d0; display: block; }
+    .banner.duplicate { background: var(--red-bg); color: var(--red-text); border: 1px solid #fecaca; display: block; }
+    .controls { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
+    .controls input { flex: 2; min-width: 220px; }
+    .controls select { flex: 1; min-width: 150px; }
+    .table-wrap { overflow-x: auto; max-height: 560px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; }
+    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem; }
+    th { background: #f8fafc; position: sticky; top: 0; z-index: 2; padding: 11px 12px; font-weight: 600; color: var(--muted); border-bottom: 1px solid var(--border); }
+    td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    tr:hover { background: #f9fafb; }
+    .badge { padding: 3px 9px; border-radius: 999px; font-size: 0.78rem; font-weight: 600; display: inline-block; }
+    .badge-Scheduled { background: var(--green-bg); color: var(--green-text); }
+    .badge-Pending { background: var(--amber-bg); color: var(--amber-text); }
+    .badge-Exported { background: var(--blue-bg); color: var(--blue-text); }
+    .action-group { display: flex; gap: 6px; }
+    .edit-input { padding: 5px 8px; font-size: 0.85rem; border-radius: 6px; }
+    .footer-note { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; margin-top: 12px; font-size: 0.82rem; color: var(--muted); }
+  </style>
 </head>
 <body>
-
 <div class="container">
   <div class="header">
     <div>
-      <h1>Ministry Scripture Tracker</h1>
-      <p style="margin: 4px 0 0; color: var(--text-muted);">Instant Verse Lookup & Video Catalog</p>
+      <h1>📖 Ministry Scripture Tracker</h1>
+      <p>Instant Verse Lookup &amp; Auto-Sorted Video Catalog</p>
     </div>
-    <div style="display:flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-      <input type="file" id="csvFileInput" accept=".csv" style="display: none;" onchange="importCSVFile(event)">
-      <button class="btn btn-secondary" onclick="document.getElementById('csvFileInput').click()" style="font-size: 13px; padding: 8px 12px;">📁 Import CSV</button>
-      <button class="btn btn-secondary" onclick="exportToCSV()" style="font-size: 13px; padding: 8px 12px;">⬇️ Export CSV</button>
-      <button class="btn btn-secondary" onclick="resetToInitialData()" style="font-size: 13px; padding: 8px 12px;">🔄 Reset</button>
+    <div class="header-actions">
+      <button class="btn-secondary" onclick="exportCSV()">⬇️ Export CSV</button>
+      <label class="btn btn-secondary" style="cursor:pointer;">
+        ⬆️ Import CSV
+        <input type="file" id="csvInput" accept=".csv" style="display:none;" onchange="importCSV(event)" />
+      </label>
+      <button class="btn-secondary" onclick="resetToDefault()">🔄 Sync Master List (309)</button>
     </div>
   </div>
 
   <div class="stats-grid">
     <div class="stat-card">
-      <div class="stat-num" id="statTotalVideos">269</div>
+      <div class="stat-val" id="statTotal">0</div>
       <div class="stat-label">Videos Tracked</div>
     </div>
     <div class="stat-card">
-      <div class="stat-num" id="statBooksUsed" style="color: #0284c7;">66 / 66</div>
+      <div class="stat-val" id="statBooks">0 / 66</div>
       <div class="stat-label">Bible Books Covered</div>
     </div>
     <div class="stat-card">
-      <div class="stat-num" id="statScheduled" style="color: #16a34a;">220</div>
+      <div class="stat-val" id="statScheduled">0</div>
       <div class="stat-label">Scheduled</div>
     </div>
     <div class="stat-card">
-      <div class="stat-num" id="statDuplicates" style="color: #dc2626;">4</div>
+      <div class="stat-val" id="statDupes">0</div>
       <div class="stat-label">Duplicate References</div>
     </div>
   </div>
 
-  <!-- LOOKUP CHECKER -->
   <div class="card">
     <div class="card-title">🔍 Check Passage Before Recording</div>
-    <div class="search-row">
-      <input type="text" id="searchInput" placeholder="Type book, chapter, or verse (e.g., Romans 8:28, Numbers 6, Judges 6)..." oninput="checkScripture()">
-      <button class="btn" onclick="checkScripture()">Check Passage</button>
+    <div class="form-grid" style="grid-template-columns: 1fr auto;">
+      <input type="text" id="checkInput" placeholder="Type a scripture reference (e.g., Psalm 23, Romans 8:28, John 3:16)..." oninput="checkPassage()" />
+      <button class="btn-secondary" onclick="document.getElementById('checkInput').value=''; checkPassage();">Clear</button>
     </div>
-    <div id="resultBox" class="alert"></div>
+    <div id="checkBanner" class="banner"></div>
   </div>
 
-  <!-- ADD NEW VIDEO FORM -->
   <div class="card">
     <div class="card-title">➕ Add New Video to Tracker</div>
-    <p style="margin-top: -6px; margin-bottom: 14px; font-size: 13px; color: var(--text-muted);">
-      Enter new videos here. Checks for duplicate passages live as you type.
+    <p style="font-size:0.86rem; color:var(--muted); margin-bottom:10px;">
+      Automatically sorts in strict numerical order by Video # (e.g., V297 always stays between V296 and V298).
     </p>
     <div class="form-grid">
-      <input type="text" id="newVid" placeholder="Video # (e.g., V270)">
-      <input type="text" id="newRef" placeholder="Passage (e.g., Psalm 100:1)" oninput="checkNewVideoInput()">
-      <input type="text" id="newTitle" placeholder="Title / Topic">
-      <input type="date" id="newDate">
+      <input type="text" id="newId" placeholder="Video # (e.g., V310)" />
+      <input type="text" id="newRef" placeholder="Passage (e.g., Psalm 46:1)" oninput="liveAddCheck()" />
+      <input type="text" id="newTitle" placeholder="Title / Topic" />
+      <input type="date" id="newDate" />
       <select id="newStatus">
         <option value="Scheduled">Scheduled</option>
-        <option value="Pending" selected>Pending</option>
+        <option selected value="Pending">Pending</option>
         <option value="Exported">Exported</option>
       </select>
-      <button class="btn" onclick="addNewVideo()">+ Add Video</button>
+      <button onclick="addVideo()">+ Add Video</button>
     </div>
-    <div id="newRefAlert" class="alert"></div>
+    <div id="addBanner" class="banner"></div>
   </div>
 
-  <!-- VIDEO DIRECTORY TABLE -->
   <div class="card">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
-      <div class="card-title" style="margin-bottom: 0;">Full Video Directory (<span id="tableCount">269</span> entries)</div>
-      <input type="text" id="filterInput" placeholder="Filter directory..." oninput="filterTable()" style="max-width: 260px; padding: 7px 12px; font-size: 13px;">
+    <div class="card-title">
+      <span>Full Video Directory (<span id="dirCount">0</span> entries)</span>
     </div>
-    <div class="table-container">
-      <table id="videosTable">
+    <div class="controls">
+      <input type="text" id="searchInput" placeholder="Search by Video #, Passage, Title, or Date..." oninput="renderTable()" />
+      <select id="bookFilter" onchange="renderTable()">
+        <option value="">All Bible Books</option>
+      </select>
+      <select id="statusFilter" onchange="renderTable()">
+        <option value="">All Statuses</option>
+        <option value="Scheduled">Scheduled</option>
+        <option value="Pending">Pending</option>
+        <option value="Exported">Exported</option>
+      </select>
+    </div>
+    <div class="table-wrap">
+      <table>
         <thead>
           <tr>
-            <th style="width: 80px;">Video #</th>
-            <th style="width: 170px;">Scripture Reference</th>
+            <th>Video #</th>
+            <th>Scripture Reference</th>
             <th>Title / Topic</th>
-            <th style="width: 120px;">Scheduled Date</th>
-            <th style="width: 140px;">Status</th>
-            <th style="width: 50px;">Delete</th>
+            <th>Scheduled Date</th>
+            <th>Status</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody id="tableBody"></tbody>
       </table>
     </div>
-    <div class="backup-bar">
-      <span>💾 Changes save automatically on this device.</span>
+    <div class="footer-note">
+      <span>💾 Changes save automatically on this device &amp; stay sorted by Video #.</span>
       <span>Use "Export CSV" and "Import CSV" to sync between phone and computer.</span>
     </div>
   </div>
 </div>
 
 <script>
-const INITIAL_DATA = [
-  {"video": "V01", "title": "Pursue Righteousness and Love", "ref": "Proverbs 21:21", "date": "2026-02-05", "status": "Scheduled"},
-  {"video": "V02", "title": "Hate Evil", "ref": "Psalm 97:10", "date": "2026-02-06", "status": "Scheduled"},
-  {"video": "V03", "title": "Love Your Enemies", "ref": "Matthew 5:43-45", "date": "2026-02-07", "status": "Scheduled"},
-  {"video": "V04", "title": "Faith Growing Abundantly", "ref": "2 Thessalonians 1:3", "date": "2026-02-08", "status": "Scheduled"},
-  {"video": "V05", "title": "Love Without Gain", "ref": "1 Corinthians 13:1-3", "date": "2026-02-09", "status": "Scheduled"},
-  {"video": "V06", "title": "Love Is Patient and Kind", "ref": "1 Corinthians 13:4-5", "date": "2026-02-10", "status": "Scheduled"},
-  {"video": "V07", "title": "Love Rejoices in Truth", "ref": "1 Corinthians 13:6-7", "date": "2026-02-11", "status": "Scheduled"},
-  {"video": "V08", "title": "God Loved the World", "ref": "John 3:16", "date": "2026-02-12", "status": "Scheduled"},
-  {"video": "V09", "title": "Love One Another", "ref": "John 13:34-35", "date": "2026-02-13", "status": "Scheduled"},
-  {"video": "V10", "title": "God’s Love Revealed", "ref": "1 John 4:10", "date": "2026-02-14", "status": "Scheduled"},
-  {"video": "V11", "title": "Love From the Beginning", "ref": "1 John 3:11", "date": "2026-02-15", "status": "Scheduled"},
-  {"video": "V12", "title": "Who Can Separate Us?", "ref": "Romans 8:35", "date": "2026-02-16", "status": "Scheduled"},
-  {"video": "V13", "title": "Nothing Can Separate Us", "ref": "Romans 8:38-39", "date": "2026-02-17", "status": "Scheduled"},
-  {"video": "V14", "title": "Love One Another Deeply", "ref": "1 John 4:11-12", "date": "2026-02-18", "status": "Scheduled"},
-  {"video": "V15", "title": "Confess and Believe", "ref": "Romans 10:9", "date": "2026-02-19", "status": "Scheduled"},
-  {"video": "V16", "title": "Love Covers Offenses", "ref": "Proverbs 17:9", "date": "2026-02-20", "status": "Scheduled"},
-  {"video": "V17", "title": "Love Fulfills the Law", "ref": "Romans 13:9-10", "date": "2026-02-21", "status": "Scheduled"},
-  {"video": "V18", "title": "Perfect Love Casts Out Fear", "ref": "1 John 4:18", "date": "2026-02-22", "status": "Scheduled"},
-  {"video": "V19", "title": "Do Good and Find Love", "ref": "Proverbs 14:22", "date": "2026-02-23", "status": "Scheduled"},
-  {"video": "V20", "title": "Seek God Wholeheartedly", "ref": "Jeremiah 29:11-13", "date": "2026-02-24", "status": "Scheduled"},
-  {"video": "V21", "title": "Think Soberly", "ref": "Romans 12:3", "date": "2026-02-25", "status": "Scheduled"},
-  {"video": "V22", "title": "Love Deeply", "ref": "1 Peter 4:7-8", "date": "2026-02-26", "status": "Scheduled"},
-  {"video": "V23", "title": "Do Not Worry", "ref": "Matthew 6:31-34", "date": "2026-02-27", "status": "Scheduled"},
-  {"video": "V24", "title": "Ask in Faith", "ref": "Matthew 21:22", "date": "2026-02-28", "status": "Scheduled"},
-  {"video": "V25", "title": "Life Abundantly", "ref": "John 10:10", "date": "2026-03-01", "status": "Scheduled"},
-  {"video": "V26", "title": "Ask and Receive", "ref": "John 15:7", "date": "2026-03-02", "status": "Scheduled"},
-  {"video": "V27", "title": "Seek the Lord", "ref": "Isaiah 55:6-7", "date": "2026-03-03", "status": "Scheduled"},
-  {"video": "V28", "title": "He Delivered Me", "ref": "Psalm 34:4", "date": "2026-03-04", "status": "Scheduled"},
-  {"video": "V29", "title": "Strength Through Christ", "ref": "Philippians 4:13", "date": "2026-03-05", "status": "Scheduled"},
-  {"video": "V30", "title": "God Arms Me with Strength", "ref": "Psalm 18:32", "date": "2026-03-06", "status": "Scheduled"},
-  {"video": "V31", "title": "Love Your Enemies", "ref": "Matthew 5:44", "date": "2026-03-07", "status": "Scheduled"},
-  {"video": "V32", "title": "Go to Your Brother", "ref": "Matthew 18:15", "date": "2026-03-08", "status": "Scheduled"},
-  {"video": "V33", "title": "Honor One Another", "ref": "Romans 12:10", "date": "2026-03-09", "status": "Scheduled"},
-  {"video": "V34", "title": "Do Not Judge", "ref": "Luke 6:37", "date": "2026-03-10", "status": "Scheduled"},
-  {"video": "V35", "title": "Blessed Are the Poor in Spirit", "ref": "Matthew 5:3", "date": "2026-03-11", "status": "Scheduled"},
-  {"video": "V36", "title": "Blessed Are Those Who Mourn", "ref": "Matthew 5:4", "date": "2026-03-12", "status": "Scheduled"},
-  {"video": "V37", "title": "Blessed Are the Meek", "ref": "Matthew 5:5", "date": "2026-03-13", "status": "Scheduled"},
-  {"video": "V38", "title": "Blessed Are Those Who Hunger", "ref": "Matthew 5:6", "date": "2026-03-14", "status": "Scheduled"},
-  {"video": "V39", "title": "Blessed Are the Merciful", "ref": "Matthew 5:7", "date": "2026-03-15", "status": "Scheduled"},
-  {"video": "V40", "title": "Blessed Are the Pure in Heart", "ref": "Matthew 5:8", "date": "2026-03-16", "status": "Scheduled"},
-  {"video": "V41", "title": "Blessed Are the Peacemakers", "ref": "Matthew 5:9", "date": "2026-03-17", "status": "Scheduled"},
-  {"video": "V42", "title": "Blessed Are the Persecuted", "ref": "Matthew 5:10", "date": "2026-03-18", "status": "Scheduled"},
-  {"video": "V43", "title": "Give Generously", "ref": "Acts 20:35", "date": "2026-03-19", "status": "Scheduled"},
-  {"video": "V44", "title": "Ask and It Will Be Given", "ref": "Luke 11:9", "date": "2026-03-20", "status": "Scheduled"},
-  {"video": "V45", "title": "Sharpen One Another", "ref": "Proverbs 27:17", "date": "2026-03-21", "status": "Scheduled"},
-  {"video": "V46", "title": "Speak What Builds Up", "ref": "Ephesians 4:29", "date": "2026-03-22", "status": "Scheduled"},
-  {"video": "V47", "title": "Show Hospitality", "ref": "Hebrews 13:2", "date": "2026-03-23", "status": "Scheduled"},
-  {"video": "V48", "title": "Forgive Others", "ref": "Matthew 6:14", "date": "2026-03-24", "status": "Scheduled"},
-  {"video": "V49", "title": "Blessed Are Those Who Believe", "ref": "John 20:29", "date": "2026-03-25", "status": "Scheduled"},
-  {"video": "V50", "title": "Nothing Too Hard for God", "ref": "Jeremiah 32:17", "date": "2026-03-26", "status": "Scheduled"},
-  {"video": "V51", "title": "Future Glory", "ref": "Romans 8:18", "date": "2026-03-27", "status": "Scheduled"},
-  {"video": "V52", "title": "Faith Produces Endurance", "ref": "James 1:3-4", "date": "2026-03-28", "status": "Scheduled"},
-  {"video": "V53", "title": "Walk by Faith", "ref": "2 Corinthians 5:7", "date": "2026-03-29", "status": "Scheduled"},
-  {"video": "V54", "title": "When I Am Afraid", "ref": "Psalm 56:3", "date": "2026-03-30", "status": "Scheduled"},
-  {"video": "V55", "title": "Trust in the Lord", "ref": "Proverbs 3:5-6", "date": "2026-03-31", "status": "Scheduled"},
-  {"video": "V56", "title": "Turn Back to God", "ref": "2 Chronicles 7:14", "date": "2026-04-01", "status": "Scheduled"},
-  {"video": "V57", "title": "Cast Your Burden on the Lord", "ref": "Psalm 55:22", "date": "2026-04-02", "status": "Scheduled"},
-  {"video": "V58", "title": "Darkness to Light", "ref": "Matthew 27:45-54", "date": "2026-04-03", "status": "Scheduled"},
-  {"video": "V59", "title": "It Is Finished", "ref": "John 19:31", "date": "2026-04-04", "status": "Scheduled"},
-  {"video": "V60", "title": "Raised for Our Justification", "ref": "Romans 4:25", "date": "2026-04-05", "status": "Scheduled"},
-  {"video": "V61", "title": "Think on These Things", "ref": "Philippians 4:8", "date": "2026-04-06", "status": "Scheduled"},
-  {"video": "V62", "title": "The Lord Is My Strength", "ref": "Psalm 28:7", "date": "2026-04-07", "status": "Scheduled"},
-  {"video": "V63", "title": "Renewed Strength", "ref": "Isaiah 40:31", "date": "2026-04-08", "status": "Scheduled"},
-  {"video": "V64", "title": "Stand Firm", "ref": "Ephesians 6:12", "date": "2026-04-09", "status": "Scheduled"},
-  {"video": "V65", "title": "Fruit of the Spirit", "ref": "Galatians 5:22-23", "date": "2026-04-10", "status": "Scheduled"},
-  {"video": "V66", "title": "Put On the New Self", "ref": "Ephesians 4:22-24", "date": "2026-04-11", "status": "Scheduled"},
-  {"video": "V67", "title": "You Are God’s Temple", "ref": "1 Corinthians 3:16", "date": "2026-04-12", "status": "Scheduled"},
-  {"video": "V68", "title": "Write Love on Your Heart", "ref": "Proverbs 3:3", "date": "2026-04-13", "status": "Scheduled"},
-  {"video": "V69", "title": "Angels Guard You", "ref": "Psalm 91:11", "date": "2026-04-14", "status": "Scheduled"},
-  {"video": "V70", "title": "Nothing Can Separate Us", "ref": "Romans 8:39", "date": "2026-04-15", "status": "Scheduled"},
-  {"video": "V71", "title": "Give Thanks Always", "ref": "1 Thessalonians 5:18", "date": "2026-04-16", "status": "Scheduled"},
-  {"video": "V72", "title": "Grace and Peace", "ref": "2 Corinthians 1:2", "date": "2026-04-17", "status": "Scheduled"},
-  {"video": "V73", "title": "May Mercy Be Yours", "ref": "Jude 1:2", "date": "2026-04-18", "status": "Scheduled"},
-  {"video": "V74", "title": "Become Like Children", "ref": "Matthew 18:3", "date": "2026-04-19", "status": "Scheduled"},
-  {"video": "V75", "title": "Let Your Yes Be Yes", "ref": "Matthew 5:37", "date": "2026-04-20", "status": "Scheduled"},
-  {"video": "V76", "title": "Be Strong and Courageous", "ref": "Joshua 1:9", "date": "2026-04-21", "status": "Scheduled"},
-  {"video": "V77", "title": "The Message of the Cross", "ref": "1 Corinthians 1:18", "date": "2026-04-22", "status": "Scheduled"},
-  {"video": "V78", "title": "Wisdom Protects", "ref": "Ecclesiastes 7:12", "date": "2026-04-23", "status": "Scheduled"},
-  {"video": "V79", "title": "God Will Never Leave You", "ref": "Hebrews 13:5", "date": "2026-04-24", "status": "Scheduled"},
-  {"video": "V80", "title": "Get Wisdom at Any Cost", "ref": "Proverbs 4:7", "date": "2026-04-25", "status": "Scheduled"},
-  {"video": "V81", "title": "The Profit of Wisdom", "ref": "Proverbs 3:13-14", "date": "2026-04-26", "status": "Scheduled"},
-  {"video": "V82", "title": "Treasures Hidden in Christ", "ref": "Colossians 2:2–3", "date": "2026-04-27", "status": "Scheduled"},
-  {"video": "V83", "title": "Ask God for Wisdom", "ref": "James 1:5", "date": "2026-04-28", "status": "Scheduled"},
-  {"video": "V84", "title": "Commit It to the Lord", "ref": "Proverbs 16:3", "date": "2026-04-29", "status": "Scheduled"},
-  {"video": "V85", "title": "You Don’t Have to Earn This", "ref": "Romans 6:23", "date": "2026-04-30", "status": "Scheduled"},
-  {"video": "V86", "title": "Lead Me in Your Truth", "ref": "Psalm 25:5", "date": "2026-05-01", "status": "Scheduled"},
-  {"video": "V87", "title": "All Things Are Possible", "ref": "Mark 9:23", "date": "2026-05-02", "status": "Scheduled"},
-  {"video": "V88", "title": "The Only Way", "ref": "John 14:6", "date": "2026-05-03", "status": "Scheduled"},
-  {"video": "V89", "title": "The Path of Life", "ref": "Psalm 16:11", "date": "2026-05-04", "status": "Scheduled"},
-  {"video": "V90", "title": "Faith That Works", "ref": "James 2:14", "date": "2026-05-05", "status": "Scheduled"},
-  {"video": "V91", "title": "Control Your Spirit", "ref": "Proverbs 29:11", "date": "2026-05-06", "status": "Scheduled"},
-  {"video": "V92", "title": "Power, Love, and a Sound Mind", "ref": "2 Timothy 1:7", "date": "2026-05-07", "status": "Scheduled"},
-  {"video": "V93", "title": "Give Thanks to the Lord", "ref": "Psalm 107:1", "date": "2026-05-08", "status": "Scheduled"},
-  {"video": "V94", "title": "A New Heart", "ref": "Ezekiel 36:26", "date": "2026-05-09", "status": "Scheduled"},
-  {"video": "V95", "title": "Renewed Day by Day", "ref": "2 Corinthians 4:16", "date": "2026-05-10", "status": "Scheduled"},
-  {"video": "V96", "title": "He Heals the Brokenhearted", "ref": "Psalm 147:3", "date": "2026-05-11", "status": "Scheduled"},
-  {"video": "V97", "title": "Be Strong and Courageous", "ref": "Deuteronomy 31:6", "date": "2026-05-12", "status": "Scheduled"},
-  {"video": "V98", "title": "Be Strong in the Work", "ref": "2 Chronicles 15:7", "date": "2026-05-13", "status": "Scheduled"},
-  {"video": "V99", "title": "Your Body Is His Temple", "ref": "1 Corinthians 6:19", "date": "2026-05-14", "status": "Scheduled"},
-  {"video": "V100", "title": "Beauty From Within", "ref": "1 Peter 3:3-4", "date": "2026-05-15", "status": "Scheduled"},
-  {"video": "V101", "title": "God Is Love", "ref": "1 John 4:16", "date": "2026-05-16", "status": "Scheduled"},
-  {"video": "V102", "title": "God Looks at the Heart", "ref": "1 Samuel 16:7", "date": "2026-05-17", "status": "Scheduled"},
-  {"video": "V103", "title": "Taste and See", "ref": "Psalm 34:8", "date": "2026-05-18", "status": "Scheduled"},
-  {"video": "V104", "title": "Give From the Heart", "ref": "2 Corinthians 9:7", "date": "2026-05-19", "status": "Scheduled"},
-  {"video": "V105", "title": "Pursue Peace and Holiness", "ref": "Hebrews 12:14", "date": "2026-05-20", "status": "Scheduled"},
-  {"video": "V106", "title": "Endure to the End", "ref": "Matthew 10:22", "date": "2026-05-21", "status": "Scheduled"},
-  {"video": "V107", "title": "Wisdom Speaks Calmly", "ref": "Proverbs 17:27", "date": "2026-05-22", "status": "Scheduled"},
-  {"video": "V108", "title": "The Golden Rule", "ref": "Matthew 7:12", "date": "2026-05-23", "status": "Scheduled"},
-  {"video": "V109", "title": "Blessed Trust", "ref": "Jeremiah 17:7", "date": "2026-05-24", "status": "Scheduled"},
-  {"video": "V110", "title": "The Father Is Greater", "ref": "John 14:28", "date": "2026-05-25", "status": "Scheduled"},
-  {"video": "V111", "title": "Surrounded by God", "ref": "Psalm 139:5", "date": "2026-05-26", "status": "Scheduled"},
-  {"video": "V112", "title": "Wisdom Builds", "ref": "Proverbs 24:3-4", "date": "2026-05-27", "status": "Scheduled"},
-  {"video": "V113", "title": "You Must Be Born Again", "ref": "John 3:7", "date": "2026-05-28", "status": "Scheduled"},
-  {"video": "V114", "title": "Endure Hardship", "ref": "2 Timothy 2:3", "date": "2026-05-29", "status": "Scheduled"},
-  {"video": "V115", "title": "The Debt of Love", "ref": "Romans 13:8", "date": "2026-05-30", "status": "Scheduled"},
-  {"video": "V116", "title": "Do Everything in Love", "ref": "1 Corinthians 16:14", "date": "2026-05-31", "status": "Scheduled"},
-  {"video": "V117", "title": "The Blessing of Obedience", "ref": "James 1:25", "date": "2026-06-01", "status": "Scheduled"},
-  {"video": "V118", "title": "God Can Do More", "ref": "Ephesians 3:20-21", "date": "2026-06-02", "status": "Scheduled"},
-  {"video": "V119", "title": "The Time Is Now", "ref": "Mark 1:15", "date": "2026-06-03", "status": "Scheduled"},
-  {"video": "V120", "title": "Seek and Find", "ref": "Jeremiah 29:13", "date": "2026-06-04", "status": "Scheduled"},
-  {"video": "V121", "title": "God’s Unfailing Love", "ref": "Psalm 36:7", "date": "2026-06-05", "status": "Scheduled"},
-  {"video": "V122", "title": "Walk With the Wise", "ref": "Proverbs 13:20", "date": "2026-06-06", "status": "Scheduled"},
-  {"video": "V123", "title": "Created in His Image", "ref": "Genesis 1:27", "date": "2026-06-07", "status": "Scheduled"},
-  {"video": "V124", "title": "Blessed Choices", "ref": "Psalm 1:1", "date": "2026-06-08", "status": "Scheduled"},
-  {"video": "V125", "title": "Strength for the Climb", "ref": "Habakkuk 3:19", "date": "2026-06-09", "status": "Scheduled"},
-  {"video": "V126", "title": "God Does Not Tempt", "ref": "James 1:13", "date": "2026-06-10", "status": "Scheduled"},
-  {"video": "V127", "title": "What Is Your Soul Worth", "ref": "Matthew 16:26", "date": "2026-06-11", "status": "Scheduled"},
-  {"video": "V128", "title": "Grow in Wisdom", "ref": "Proverbs 1:5", "date": "2026-06-12", "status": "Scheduled"},
-  {"video": "V129", "title": "Loyalty Matters", "ref": "Proverbs 19:22", "date": "2026-06-13", "status": "Scheduled"},
-  {"video": "V130", "title": "Cast Your Cares", "ref": "1 Peter 5:7", "date": "2026-06-14", "status": "Scheduled"},
-  {"video": "V131", "title": "God Protects You", "ref": "Psalm 121:7", "date": "2026-06-15", "status": "Scheduled"},
-  {"video": "V132", "title": "True Beauty", "ref": "Proverbs 31:30", "date": "2026-06-16", "status": "Scheduled"},
-  {"video": "V133", "title": "Seasons Have Purpose", "ref": "Ecclesiastes 3:1", "date": "2026-06-17", "status": "Scheduled"},
-  {"video": "V134", "title": "Eternal Life", "ref": "John 11:26", "date": "2026-06-18", "status": "Scheduled"},
-  {"video": "V135", "title": "Refreshing From the Lord", "ref": "Acts 3:19-20", "date": "2026-06-19", "status": "Scheduled"},
-  {"video": "V136", "title": "He Restores My Soul", "ref": "Psalm 23:1-3", "date": "2026-06-20", "status": "Scheduled"},
-  {"video": "V137", "title": "Fear Not", "ref": "Isaiah 41:10", "date": "2026-06-21", "status": "Scheduled"},
-  {"video": "V138", "title": "Walk Humbly", "ref": "Micah 6:8", "date": "2026-06-22", "status": "Scheduled"},
-  {"video": "V139", "title": "Peace Beyond Understanding", "ref": "Philippians 4:6-7", "date": "2026-06-23", "status": "Scheduled"},
-  {"video": "V140", "title": "Renew Your Mind", "ref": "Romans 12:2", "date": "2026-06-24", "status": "Scheduled"},
-  {"video": "V141", "title": "Ever-Present Help", "ref": "Psalm 46:1", "date": "2026-06-25", "status": "Scheduled"},
-  {"video": "V142", "title": "Faith Defined", "ref": "Hebrews 11:1", "date": "2026-06-26", "status": "Scheduled"},
-  {"video": "V143", "title": "Work Unto the Lord", "ref": "Colossians 3:23", "date": "2026-06-27", "status": "Scheduled"},
-  {"video": "V144", "title": "God’s Guidance", "ref": "Psalm 119:105", "date": "2026-06-28", "status": "Scheduled"},
-  {"video": "V145", "title": "Perfect Peace", "ref": "Isaiah 26:3", "date": "2026-06-29", "status": "Scheduled"},
-  {"video": "V146", "title": "Rest for the Weary", "ref": "Matthew 11:28-30", "date": "2026-06-30", "status": "Scheduled"},
-  {"video": "V147", "title": "Forgiven and Cleansed", "ref": "1 John 1:9", "date": "2026-07-01", "status": "Scheduled"},
-  {"video": "V148", "title": "Safe Tower", "ref": "Proverbs 18:10", "date": "2026-07-02", "status": "Scheduled"},
-  {"video": "V149", "title": "Overflowing Hope", "ref": "Romans 15:13", "date": "2026-07-03", "status": "Scheduled"},
-  {"video": "V150", "title": "New Mercies", "ref": "Lamentations 3:22-23", "date": "2026-07-04", "status": "Scheduled"},
-  {"video": "V151", "title": "Be Still", "ref": "Psalm 46:10", "date": "2026-07-05", "status": "Scheduled"},
-  {"video": "V152", "title": "Saved by Grace", "ref": "Ephesians 2:8-9", "date": "2026-07-06", "status": "Scheduled"},
-  {"video": "V153", "title": "God Is Patient", "ref": "2 Peter 3:9", "date": "2026-07-07", "status": "Scheduled"},
-  {"video": "V154", "title": "Wonderfully Made", "ref": "Psalm 139:14", "date": "2026-07-08", "status": "Scheduled"},
-  {"video": "V155", "title": "Put On Love", "ref": "Colossians 3:12-14", "date": "2026-07-09", "status": "Scheduled"},
-  {"video": "V156", "title": "Delight in the Lord", "ref": "Psalm 37:4", "date": "2026-07-10", "status": "Scheduled"},
-  {"video": "V157", "title": "Strength to the Weak", "ref": "Isaiah 40:29", "date": "2026-07-11", "status": "Scheduled"},
-  {"video": "V158", "title": "Draw Near to God", "ref": "James 4:8", "date": "2026-07-12", "status": "Scheduled"},
-  {"video": "V159", "title": "Loved Before You Changed", "ref": "Romans 5:8", "date": "2026-07-13", "status": "Scheduled"},
-  {"video": "V160", "title": "Close to the Brokenhearted", "ref": "Psalm 34:18", "date": "2026-07-14", "status": "Scheduled"},
-  {"video": "V161", "title": "Don’t Grow Weary", "ref": "Galatians 6:9", "date": "2026-07-15", "status": "Scheduled"},
-  {"video": "V162", "title": "Living Hope", "ref": "1 Peter 1:3", "date": "2026-07-16", "status": "Scheduled"},
-  {"video": "V163", "title": "Steps Ordered by God", "ref": "Psalm 37:23", "date": "2026-07-17", "status": "Scheduled"},
-  {"video": "V164", "title": "Light of the World", "ref": "John 8:12", "date": "2026-07-18", "status": "Scheduled"},
-  {"video": "V165", "title": "Encouragement Through Scripture", "ref": "Romans 15:4", "date": "2026-07-19", "status": "Scheduled"},
-  {"video": "V166", "title": "Forgiven Completely", "ref": "Psalm 103:12", "date": "2026-07-20", "status": "Scheduled"},
-  {"video": "V167", "title": "He Will Be With You", "ref": "Isaiah 43:2", "date": "2026-07-21", "status": "Scheduled"},
-  {"video": "V168", "title": "Anxiety Weighs Down", "ref": "Proverbs 12:25", "date": "2026-07-22", "status": "Scheduled"},
-  {"video": "V169", "title": "Ask, Seek, Knock", "ref": "Matthew 7:7", "date": "2026-07-23", "status": "Scheduled"},
-  {"video": "V170", "title": "Words That Please God", "ref": "Psalm 19:14", "date": "2026-07-24", "status": "Scheduled"},
-  {"video": "V171", "title": "Held Together in Christ", "ref": "Colossians 1:17", "date": "2026-07-25", "status": "Scheduled"},
-  {"video": "V172", "title": "Hold Fast to Hope", "ref": "Hebrews 10:23", "date": "2026-07-26", "status": "Scheduled"},
-  {"video": "V173", "title": "God Will Instruct You", "ref": "Psalm 32:8", "date": "2026-07-27", "status": "Scheduled"},
-  {"video": "V174", "title": "Encourage One Another", "ref": "1 Thessalonians 5:11", "date": "2026-07-28", "status": "Scheduled"},
-  {"video": "V175", "title": "Peace in Trouble", "ref": "John 16:33", "date": "2026-07-29", "status": "Scheduled"},
-  {"video": "V176", "title": "The Lord Is Near", "ref": "Psalm 145:18", "date": "2026-07-30", "status": "Scheduled"},
-  {"video": "V177", "title": "Guided and Satisfied", "ref": "Isaiah 58:11", "date": "2026-07-31", "status": "Scheduled"},
-  {"video": "V178", "title": "No Condemnation", "ref": "Romans 8:1", "date": "2026-08-01", "status": "Scheduled"},
-  {"video": "V179", "title": "Strength of My Heart", "ref": "Psalm 73:26", "date": "2026-08-02", "status": "Scheduled"},
-  {"video": "V180", "title": "Bread of Life", "ref": "John 6:35", "date": "2026-08-03", "status": "Scheduled"},
-  {"video": "V181", "title": "Refresh Others", "ref": "Proverbs 11:25", "date": "2026-08-04", "status": "Scheduled"},
-  {"video": "V182", "title": "Grace Is Sufficient", "ref": "2 Corinthians 12:9", "date": "2026-08-05", "status": "Scheduled"},
-  {"video": "V183", "title": "I Will Not Be Shaken", "ref": "Psalm 16:8", "date": "2026-08-06", "status": "Scheduled"},
-  {"video": "V184", "title": "Build on the Rock", "ref": "Matthew 7:24", "date": "2026-08-07", "status": "Scheduled"},
-  {"video": "V185", "title": "This Is the Way", "ref": "Isaiah 30:21", "date": "2026-08-08", "status": "Scheduled"},
-  {"video": "V186", "title": "Trust in the Lord", "ref": "Psalm 20:7", "date": "2026-08-09", "status": "Scheduled"},
-  {"video": "V187", "title": "Confidence in Prayer", "ref": "1 John 5:14", "date": "2026-08-10", "status": "Scheduled"},
-  {"video": "V188", "title": "Set Your Mind Above", "ref": "Colossians 3:2", "date": "2026-08-11", "status": "Scheduled"},
-  {"video": "V189", "title": "My Rock and Salvation", "ref": "Psalm 62:6", "date": "2026-08-12", "status": "Scheduled"},
-  {"video": "V190", "title": "Every Good Gift", "ref": "James 1:17", "date": "2026-08-13", "status": "Scheduled"},
-  {"video": "V191", "title": "Pursue Peace", "ref": "Romans 14:19", "date": "2026-08-14", "status": "Scheduled"},
-  {"video": "V192", "title": "Establish the Work", "ref": "Psalm 90:17", "date": "2026-08-15", "status": "Scheduled"},
-  {"video": "V193", "title": "Restore and Strengthen", "ref": "1 Peter 5:10", "date": "2026-08-16", "status": "Scheduled"},
-  {"video": "V194", "title": "Abide in Me", "ref": "John 15:5", "date": "2026-08-17", "status": "Scheduled"},
-  {"video": "V195", "title": "His Word Is Faithful", "ref": "Psalm 33:4", "date": "2026-08-18", "status": "Scheduled"},
-  {"video": "V196", "title": "My Rock and Fortress", "ref": "Psalm 18:2", "date": "2026-08-19", "status": "Scheduled"},
-  {"video": "V197", "title": "God Holds Your Hand", "ref": "Isaiah 41:13", "date": "2026-08-20", "status": "Scheduled"},
-  {"video": "V198", "title": "Joy, Patience, Prayer", "ref": "Romans 12:12", "date": "2026-08-21", "status": "Scheduled"},
-  {"video": "V199", "title": "The Lord Is My Light", "ref": "Psalm 27:1", "date": "2026-08-22", "status": "Scheduled"},
-  {"video": "V200", "title": "God Provides", "ref": "Philippians 4:19", "date": "2026-08-23", "status": "Scheduled"},
-  {"video": "V201", "title": "Be Still", "ref": "Psalm 46:10", "date": "2026-08-24", "status": "Scheduled"},
-  {"video": "V202", "title": "Grace in Time of Need", "ref": "Hebrews 4:16", "date": "2026-08-25", "status": "Scheduled"},
-  {"video": "V203", "title": "Help From the Lord", "ref": "Psalm 121:2", "date": "2026-08-26", "status": "Scheduled"},
-  {"video": "V204", "title": "Spirit of Power", "ref": "2 Timothy 1:7", "date": "2026-08-27", "status": "Scheduled"},
-  {"video": "V205", "title": "Joy Comes in the Morning", "ref": "Psalm 30:5", "date": "2026-08-28", "status": "Scheduled"},
-  {"video": "V206", "title": "Peace I Leave With You", "ref": "John 14:27", "date": "2026-08-29", "status": "Scheduled"},
-  {"video": "V207", "title": "Trust in His Name", "ref": "Psalm 9:10", "date": "2026-08-30", "status": "Scheduled"},
-  {"video": "V208", "title": "Steadfast in the Lord", "ref": "1 Corinthians 15:58", "date": "2026-08-31", "status": "Scheduled"},
-  {"video": "V209", "title": "Cast Your Burden", "ref": "Psalm 55:22", "date": "2026-09-01", "status": "Scheduled"},
-  {"video": "V210", "title": "Exceedingly Abundantly", "ref": "Ephesians 3:20", "date": "2026-09-02", "status": "Scheduled"},
-  {"video": "V211", "title": "This Is the Day", "ref": "Psalm 118:24", "date": "2026-09-03", "status": "Scheduled"},
-  {"video": "V212", "title": "Ask for Wisdom", "ref": "James 1:5", "date": "2026-09-04", "status": "Scheduled"},
-  {"video": "V213", "title": "Forget Not His Benefits", "ref": "Psalm 103:2", "date": "2026-09-05", "status": "Scheduled"},
-  {"video": "V214", "title": "The Lord Hears You", "ref": "1 Peter 3:12", "date": "2026-09-06", "status": "Scheduled"},
-  {"video": "V215", "title": "He Heard My Cry", "ref": "Psalm 40:1", "date": "2026-09-07", "status": "Scheduled"},
-  {"video": "V216", "title": "The Lord Is My Stronghold", "ref": "Nahum 1:7", "date": "2026-09-08", "status": "Scheduled"},
-  {"video": "V217", "title": "Greater Glory Ahead", "ref": "Haggai 2:9", "date": "2026-09-09", "status": "Scheduled"},
-  {"video": "V218", "title": "The Lord Is Righteous", "ref": "Zephaniah 3:5", "date": "2026-09-10", "status": "Scheduled"},
-  {"video": "V219", "title": "Deliverance Belongs to God", "ref": "Obadiah 1:17", "date": "2026-09-11", "status": "Scheduled"},
-  {"video": "V220", "title": "Make Your Faith Effective", "ref": "Philemon 1:6", "date": "2026-09-12", "status": "Scheduled"},
-  {"video": "V221", "title": "Walking in Truth", "ref": "3 John 1:4", "date": "2026-09-13", "status": "Pending"},
-  {"video": "V222", "title": "Return to Me", "ref": "Joel 2:12", "date": "2026-09-14", "status": "Pending"},
-  {"video": "V223", "title": "Let Justice Roll", "ref": "Amos 5:24", "date": "2026-09-15", "status": "Pending"},
-  {"video": "V224", "title": "Healing in His Wings", "ref": "Malachi 4:2", "date": "2026-09-16", "status": "Pending"},
-  {"video": "V225", "title": "Grace Appeared", "ref": "Titus 2:11", "date": "2026-09-17", "status": "Pending"},
-  {"video": "V226", "title": "Walk in Love", "ref": "2 John 1:6", "date": "2026-09-18", "status": "Pending"},
-  {"video": "V227", "title": "I Will Wait for God", "ref": "Micah 7:7", "date": "2026-09-19", "status": "Pending"},
-  {"video": "V228", "title": "You Alone Are Lord", "ref": "Nehemiah 9:6", "date": "2026-09-20", "status": "Pending"},
-  {"video": "V229", "title": "God Changes Times and Seasons", "ref": "Daniel 2:21", "date": "2026-09-21", "status": "Pending"},
-  {"video": "V230", "title": "Refuge for the Broken", "ref": "Psalm 62:8", "date": "2026-09-22", "status": "Pending"},
-  {"video": "V231", "title": "Called by Name", "ref": "Isaiah 43:1", "date": "2026-09-23", "status": "Pending"},
-  {"video": "V232", "title": "He Will Finish It", "ref": "Philippians 1:6", "date": "2026-09-24", "status": "Pending"},
-  {"video": "V233", "title": "Guarded by His Word", "ref": "Psalm 119:11", "date": "2026-09-25", "status": "Pending"},
-  {"video": "V234", "title": "Christ Lives in You", "ref": "Galatians 2:20", "date": "2026-09-26", "status": "Pending"},
-  {"video": "V235", "title": "Faith That Pleases God", "ref": "Hebrews 11:6", "date": "2026-09-27", "status": "Pending"},
-  {"video": "V236", "title": "Never Alone", "ref": "Matthew 28:20", "date": "2026-09-28", "status": "Pending"},
-  {"video": "V237", "title": "Unshakable Strength", "ref": "Psalm 46:5", "date": "2026-09-29", "status": "Pending"},
-  {"video": "V238", "title": "Peace With God", "ref": "Romans 5:1", "date": "2026-09-30", "status": "Pending"},
-  {"video": "V239", "title": "Choose Joy", "ref": "1 Thessalonians 5:16", "date": "2026-10-01", "status": "Pending"},
-  {"video": "V240", "title": "All Things Work Together", "ref": "Romans 8:28", "date": "2026-10-02", "status": "Pending"},
-  {"video": "V241", "title": "Faith Moves Mountains", "ref": "Matthew 17:20", "date": "2026-10-03", "status": "Pending"},
-  {"video": "V242", "title": "Peaceful Sleep", "ref": "Psalm 4:8", "date": "2026-10-04", "status": "Pending"},
-  {"video": "V243", "title": "Hope in God", "ref": "Psalm 43:3-5", "date": "2026-10-05", "status": "Pending"},
-  {"video": "V244", "title": "You Are My Refuge", "ref": "Psalm 142:5", "date": "2026-10-06", "status": "Pending"},
-  {"video": "V245", "title": "God Is My Good", "ref": "Psalm 16:1-2", "date": "2026-10-07", "status": "Pending"},
-  {"video": "V246", "title": "The Lord Hears My Cry", "ref": "Psalm 6:9", "date": "2026-10-08", "status": "Pending"},
-  {"video": "V247", "title": "Committed to God", "ref": "Ruth 1:16-17", "date": "2026-10-09", "status": "Pending"},
-  {"video": "V248", "title": "Blessed to Be a Blessing", "ref": "Genesis 12:2-3", "date": "2026-10-10", "status": "Pending"},
-  {"video": "V249", "title": "God’s Covenant Promise", "ref": "Genesis 9:13", "date": "2026-10-11", "status": "Pending"},
-  {"video": "V250", "title": "The Lord Will Fight for You", "ref": "Exodus 14:14", "date": "2026-10-12", "status": "Pending"},
-  {"video": "V251", "title": "Fight the Good Fight of Faith", "ref": "1 Timothy 6:12", "date": "2026-10-13", "status": "Pending"},
-  {"video": "V252", "title": "No More Tears", "ref": "Revelation 21:4", "date": "2026-10-14", "status": "Pending"},
-  {"video": "V253", "title": "Led by His Spirit", "ref": "Zechariah 4:6", "date": "2026-10-15", "status": "Pending"},
-  {"video": "V254", "title": "My Redeemer Lives", "ref": "Job 19:25", "date": "2026-10-16", "status": "Pending"},
-  {"video": "V255", "title": "For Such a Time as This", "ref": "Esther 4:14", "date": "2026-10-17", "status": "Pending"},
-  {"video": "V256", "title": "Flawless and Faithful", "ref": "2 Samuel 22:31", "date": "2026-10-18", "status": "Pending"},
-  {"video": "V257", "title": "The Gentle Whisper of God", "ref": "1 Kings 19:11-12", "date": "2026-10-19", "status": "Pending"},
-  {"video": "V258", "title": "Salvation Comes From the Lord", "ref": "Jonah 2:9", "date": "2026-10-20", "status": "Pending"},
-  {"video": "V259", "title": "Press On to Know the Lord", "ref": "Hosea 6:3", "date": "2026-10-21", "status": "Pending"},
-  {"video": "V260", "title": "The Lord Bless You and Keep You", "ref": "Numbers 6:24-26", "date": "2026-10-22", "status": "Pending"},
-  {"video": "V261", "title": "Love Your Neighbor as Yourself", "ref": "Leviticus 19:18", "date": "2026-10-23", "status": "Pending"},
-  {"video": "V262", "title": "The Lord Is With You, Mighty Warrior", "ref": "Judges 6:12", "date": "2026-10-24", "status": "Pending"},
-  {"video": "V263", "title": "Those With Us Are More", "ref": "2 Kings 6:16", "date": "2026-10-25", "status": "Pending"},
-  {"video": "V264", "title": "Seek the Lord and His Strength", "ref": "1 Chronicles 16:11", "date": "2026-10-26", "status": "Pending"},
-  {"video": "V265", "title": "Yours, Lord, Is the Greatness", "ref": "1 Chronicles 29:11", "date": "2026-10-27", "status": "Pending"},
-  {"video": "V266", "title": "Devoted to God’s Word", "ref": "Ezra 7:10", "date": "2026-10-28", "status": "Pending"},
-  {"video": "V267", "title": "The Winter Is Past", "ref": "Song of Solomon 2:11-12", "date": "2026-10-29", "status": "Pending"},
-  {"video": "V268", "title": "The Eternal God Is Your Refuge", "ref": "Deuteronomy 33:27", "date": "2026-10-30", "status": "Pending"},
-  {"video": "V269", "title": "Under the Shadow of the Almighty", "ref": "Psalm 91:1-2", "date": "2026-10-31", "status": "Pending"}
-];
+const DEFAULT_VIDEOS = [{"id": "V01", "ref": "Proverbs 21:21", "title": "Pursue Righteousness and Love", "date": "2026-02-05", "status": "Scheduled"}, {"id": "V02", "ref": "Psalm 97:10", "title": "Hate Evil", "date": "2026-02-06", "status": "Scheduled"}, {"id": "V03", "ref": "Matthew 5:43-45", "title": "Love Your Enemies", "date": "2026-02-07", "status": "Scheduled"}, {"id": "V04", "ref": "2 Thessalonians 1:3", "title": "Faith Growing Abundantly", "date": "2026-02-08", "status": "Scheduled"}, {"id": "V05", "ref": "1 Corinthians 13:1-3", "title": "Love Without Gain", "date": "2026-02-09", "status": "Scheduled"}, {"id": "V06", "ref": "1 Corinthians 13:4-5", "title": "Love Is Patient and Kind", "date": "2026-02-10", "status": "Scheduled"}, {"id": "V07", "ref": "1 Corinthians 13:6-7", "title": "Love Rejoices in Truth", "date": "2026-02-11", "status": "Scheduled"}, {"id": "V08", "ref": "John 3:16", "title": "God Loved the World", "date": "2026-02-12", "status": "Scheduled"}, {"id": "V09", "ref": "John 13:34-35", "title": "Love One Another", "date": "2026-02-13", "status": "Scheduled"}, {"id": "V10", "ref": "1 John 4:10", "title": "God’s Love Revealed", "date": "2026-02-14", "status": "Scheduled"}, {"id": "V11", "ref": "1 John 3:11", "title": "Love From the Beginning", "date": "2026-02-15", "status": "Scheduled"}, {"id": "V12", "ref": "Romans 8:35", "title": "Who Can Separate Us?", "date": "2026-02-16", "status": "Scheduled"}, {"id": "V13", "ref": "Roman 8:38-39", "title": "Nothing Can Separate Us", "date": "2026-02-17", "status": "Scheduled"}, {"id": "V14", "ref": "1 John 4:11-12", "title": "Love One Another Deeply", "date": "2026-02-18", "status": "Scheduled"}, {"id": "V15", "ref": "Roman 10:9", "title": "Confess and Believe", "date": "2026-02-19", "status": "Scheduled"}, {"id": "V16", "ref": "Proverbs 17:9", "title": "Love Covers Offenses", "date": "2026-02-20", "status": "Scheduled"}, {"id": "V17", "ref": "Roman 13:9-10", "title": "Love Fulfills the Law", "date": "2026-02-21", "status": "Scheduled"}, {"id": "V18", "ref": "1 John 4:18", "title": "Perfect Love Casts Out Fear", "date": "2026-02-22", "status": "Scheduled"}, {"id": "V19", "ref": "Proverbs 14:22", "title": "Do Good and Find Love", "date": "2026-02-23", "status": "Scheduled"}, {"id": "V20", "ref": "Jeremiah 29:11-13", "title": "Seek God Wholeheartedly", "date": "2026-02-24", "status": "Scheduled"}, {"id": "V21", "ref": "Roman 12:3", "title": "Think Soberly", "date": "2026-02-25", "status": "Scheduled"}, {"id": "V22", "ref": "1 Peter 4:7-8", "title": "Love Deeply", "date": "2026-02-26", "status": "Scheduled"}, {"id": "V23", "ref": "Matthew 6:31-34", "title": "Do Not Worry", "date": "2026-02-27", "status": "Scheduled"}, {"id": "V24", "ref": "Matthew 21:22", "title": "Ask in Faith", "date": "2026-02-28", "status": "Scheduled"}, {"id": "V25", "ref": "John 10:10", "title": "Life Abundantly", "date": "2026-03-01", "status": "Scheduled"}, {"id": "V26", "ref": "John 15:7", "title": "Ask and Receive", "date": "2026-03-02", "status": "Scheduled"}, {"id": "V27", "ref": "Isaiah 55:6-7", "title": "Seek the Lord", "date": "2026-03-03", "status": "Scheduled"}, {"id": "V28", "ref": "Psalms 34:4", "title": "He Delivered Me", "date": "2026-03-04", "status": "Scheduled"}, {"id": "V29", "ref": "Philippians 4:13", "title": "Strength Through Christ", "date": "2026-03-05", "status": "Scheduled"}, {"id": "V30", "ref": "Psalm 18:32", "title": "God Arms Me with Strength", "date": "2026-03-06", "status": "Scheduled"}, {"id": "V31", "ref": "Matthew 5:44", "title": "Love Your Enemies", "date": "2026-03-07", "status": "Scheduled"}, {"id": "V32", "ref": "Matthew 18:15", "title": "Go to Your Brother", "date": "2026-03-08", "status": "Scheduled"}, {"id": "V33", "ref": "Roman 12:10", "title": "Honor One Another", "date": "2026-03-09", "status": "Scheduled"}, {"id": "V34", "ref": "Luke 6:37", "title": "Do Not Judge", "date": "2026-03-10", "status": "Scheduled"}, {"id": "V35", "ref": "Matthew 5:3", "title": "Blessed Are the Poor in Spirit", "date": "2026-03-11", "status": "Scheduled"}, {"id": "V36", "ref": "Matthew 5:4", "title": "Blessed Are Those Who Mourn", "date": "2026-03-12", "status": "Scheduled"}, {"id": "V37", "ref": "Matthew 5:5", "title": "Blessed Are the Meek", "date": "2026-03-13", "status": "Scheduled"}, {"id": "V38", "ref": "Matthew 5:6", "title": "Blessed Are Those Who Hunger", "date": "2026-03-14", "status": "Scheduled"}, {"id": "V39", "ref": "Matthew 5:7", "title": "Blessed Are the Merciful", "date": "2026-03-15", "status": "Scheduled"}, {"id": "V40", "ref": "Matthew 5:8", "title": "Blessed Are the Pure in Heart", "date": "2026-03-16", "status": "Scheduled"}, {"id": "V41", "ref": "Mathhew 5:9", "title": "Blessed Are the Peacemakers", "date": "2026-03-17", "status": "Scheduled"}, {"id": "V42", "ref": "Matthew 5:10", "title": "Blessed Are the Persecuted", "date": "2026-03-18", "status": "Scheduled"}, {"id": "V43", "ref": "Acts 20:35", "title": "Give Generously", "date": "2026-03-19", "status": "Scheduled"}, {"id": "V44", "ref": "Luke 11:9", "title": "Ask and It Will Be Given", "date": "2026-03-20", "status": "Scheduled"}, {"id": "V45", "ref": "Proverbs 27:17", "title": "Sharpen One Another", "date": "2026-03-21", "status": "Scheduled"}, {"id": "V46", "ref": "Ephesians 4:29", "title": "Speak What Builds Up", "date": "2026-03-22", "status": "Scheduled"}, {"id": "V47", "ref": "Hebrews 13:2", "title": "Show Hospitality", "date": "2026-03-23", "status": "Scheduled"}, {"id": "V48", "ref": "Matthew 6:14", "title": "Forgive Others", "date": "2026-03-24", "status": "Scheduled"}, {"id": "V49", "ref": "John 20:29", "title": "Blessed Are Those Who Believe", "date": "2026-03-25", "status": "Scheduled"}, {"id": "V50", "ref": "Jeremiah 32:17", "title": "Nothing Too Hard for God", "date": "2026-03-26", "status": "Scheduled"}, {"id": "V51", "ref": "Roman 8:18", "title": "Future Glory", "date": "2026-03-27", "status": "Scheduled"}, {"id": "V52", "ref": "James 1:3-4", "title": "Faith Produces Endurance", "date": "2026-03-28", "status": "Scheduled"}, {"id": "V53", "ref": "2 Corinthians 5:7", "title": "Walk by Faith", "date": "2026-03-29", "status": "Scheduled"}, {"id": "V54", "ref": "Psalm 56:3", "title": "When I Am Afraid", "date": "2026-03-30", "status": "Scheduled"}, {"id": "V55", "ref": "Proverbs 3:5-6", "title": "Trust in the Lord", "date": "2026-03-31", "status": "Scheduled"}, {"id": "V56", "ref": "2 Chronicles 7:14", "title": "Turn Back to God", "date": "2026-04-01", "status": "Scheduled"}, {"id": "V57", "ref": "Psalm 55:22", "title": "Cast Your Burden on the Lord", "date": "2026-04-02", "status": "Scheduled"}, {"id": "V58", "ref": "Matthew 27:45-54", "title": "Darkness to Light", "date": "2026-04-03", "status": "Scheduled"}, {"id": "V59", "ref": "John 19:31", "title": "It Is Finished", "date": "2026-04-04", "status": "Scheduled"}, {"id": "V60", "ref": "Roman 4:25", "title": "Raised for Our Justification", "date": "2026-04-05", "status": "Scheduled"}, {"id": "V61", "ref": "Philippians 4:8", "title": "Think on These Things", "date": "2026-04-06", "status": "Scheduled"}, {"id": "V62", "ref": "Psalm 28:7", "title": "The Lord Is My Strength", "date": "2026-04-07", "status": "Scheduled"}, {"id": "V63", "ref": "Isaiah 40:31", "title": "Renewed Strength", "date": "2026-04-08", "status": "Scheduled"}, {"id": "V64", "ref": "Ephesians 6:12", "title": "Stand Firm", "date": "2026-04-09", "status": "Scheduled"}, {"id": "V65", "ref": "Galatians 5:22-23", "title": "Fruit of the Spirit", "date": "2026-04-10", "status": "Scheduled"}, {"id": "V66", "ref": "Ephesians 4:22-24", "title": "Put On the New Self", "date": "2026-04-11", "status": "Scheduled"}, {"id": "V67", "ref": "1 Corinthians 3:16", "title": "You Are God’s Temple", "date": "2026-04-12", "status": "Scheduled"}, {"id": "V68", "ref": "Proverbs 3:3", "title": "Write Love on Your Heart", "date": "2026-04-13", "status": "Scheduled"}, {"id": "V69", "ref": "Psalms 91:11", "title": "Angels Guard You", "date": "2026-04-14", "status": "Scheduled"}, {"id": "V70", "ref": "Roman 8:39", "title": "Nothing Can Separate Us", "date": "2026-04-15", "status": "Scheduled"}, {"id": "V71", "ref": "1 Thessalonians 5:18", "title": "Give Thanks Always", "date": "2026-04-16", "status": "Scheduled"}, {"id": "V72", "ref": "2 Corinthians 1:2", "title": "Grace and Peace", "date": "2026-04-17", "status": "Scheduled"}, {"id": "V73", "ref": "Jude 1:2", "title": "May Mercy Be Yours", "date": "2026-04-18", "status": "Scheduled"}, {"id": "V74", "ref": "Matthew 18:3", "title": "Become Like Children", "date": "2026-04-19", "status": "Scheduled"}, {"id": "V75", "ref": "Matthew 5:37", "title": "Let Your Yes Be Yes", "date": "2026-04-20", "status": "Scheduled"}, {"id": "V76", "ref": "Joshua 1:9", "title": "Be Strong and Courageous", "date": "2026-04-21", "status": "Scheduled"}, {"id": "V77", "ref": "1 Corinthians 1:18", "title": "The Message of the Cross", "date": "2026-04-22", "status": "Scheduled"}, {"id": "V78", "ref": "Ecclesiastes 7:12", "title": "Wisdom Protects", "date": "2026-04-23", "status": "Scheduled"}, {"id": "V79", "ref": "Hebrews 13:5", "title": "God Will Never Leave You", "date": "2026-04-24", "status": "Scheduled"}, {"id": "V80", "ref": "Proverbs 4:7", "title": "Get Wisdom at Any Cost", "date": "2026-04-25", "status": "Scheduled"}, {"id": "V81", "ref": "Proverbs 3:13-14", "title": "The Profit of Wisdom", "date": "2026-04-26", "status": "Scheduled"}, {"id": "V82", "ref": "Colossians 2:2–3", "title": "Treasures Hidden in Christ", "date": "2026-04-27", "status": "Scheduled"}, {"id": "V83", "ref": "James 1:5", "title": "Ask God for Wisdom", "date": "2026-04-28", "status": "Scheduled"}, {"id": "V84", "ref": "Proverbs 16:3", "title": "Commit It to the Lord", "date": "2026-04-29", "status": "Scheduled"}, {"id": "V85", "ref": "Roman 6:23", "title": "You Don’t Have to Earn This", "date": "2026-04-30", "status": "Scheduled"}, {"id": "V86", "ref": "Psalm 25:5", "title": "Lead Me in Your Truth", "date": "2026-05-01", "status": "Scheduled"}, {"id": "V87", "ref": "Mark 9:23", "title": "All Things Are Possible", "date": "2026-05-02", "status": "Scheduled"}, {"id": "V88", "ref": "John 14:6", "title": "The Only Way", "date": "2026-05-03", "status": "Scheduled"}, {"id": "V89", "ref": "Psalm 16:11", "title": "The Path of Life", "date": "2026-05-04", "status": "Scheduled"}, {"id": "V90", "ref": "James 2:14", "title": "Faith That Works", "date": "2026-05-05", "status": "Scheduled"}, {"id": "V91", "ref": "Proverbs 29:11", "title": "Control Your Spirit", "date": "2026-05-06", "status": "Scheduled"}, {"id": "V92", "ref": "2 Timothy 1:7", "title": "Power, Love, and a Sound Mind", "date": "2026-05-07", "status": "Scheduled"}, {"id": "V93", "ref": "Psalm 107:1", "title": "Give Thanks to the Lord", "date": "2026-05-08", "status": "Scheduled"}, {"id": "V94", "ref": "Ezekiel 36:26", "title": "A New Heart", "date": "2026-05-09", "status": "Scheduled"}, {"id": "V95", "ref": "2 Corinthians 4:16", "title": "Renewed Day by Day", "date": "2026-05-10", "status": "Scheduled"}, {"id": "V96", "ref": "Psalm 147:3", "title": "He Heals the Brokenhearted", "date": "2026-05-11", "status": "Scheduled"}, {"id": "V97", "ref": "Deuteronomy 31:6", "title": "Be Strong and Courageous", "date": "2026-05-12", "status": "Scheduled"}, {"id": "V98", "ref": "2 Chronicles 15:7", "title": "Be Strong in the Work", "date": "2026-05-13", "status": "Scheduled"}, {"id": "V99", "ref": "1 Corinthians 6:19", "title": "Your Body Is His Temple", "date": "2026-05-14", "status": "Scheduled"}, {"id": "V100", "ref": "1 Peter 3:3-4", "title": "Beauty From Within", "date": "2026-05-15", "status": "Scheduled"}, {"id": "V101", "ref": "1 John 4:16", "title": "God Is Love", "date": "2026-05-16", "status": "Scheduled"}, {"id": "V102", "ref": "1 Samuel 16:7", "title": "God Looks at the Heart", "date": "2026-05-17", "status": "Scheduled"}, {"id": "V103", "ref": "Psalm 34:8", "title": "Taste and See", "date": "2026-05-18", "status": "Scheduled"}, {"id": "V104", "ref": "2 Corinthians 9:7", "title": "Give From the Heart", "date": "2026-05-19", "status": "Scheduled"}, {"id": "V105", "ref": "Hebrews 12:14", "title": "Pursue Peace and Holiness", "date": "2026-05-20", "status": "Scheduled"}, {"id": "V106", "ref": "Matthew 10:22", "title": "Endure to the End", "date": "2026-05-21", "status": "Scheduled"}, {"id": "V107", "ref": "Proverbs 17:27", "title": "Wisdom Speaks Calmly", "date": "2026-05-22", "status": "Scheduled"}, {"id": "V108", "ref": "Matthew 7:12", "title": "The Golden Rule", "date": "2026-05-23", "status": "Scheduled"}, {"id": "V109", "ref": "Jeremiah 17:7", "title": "Blessed Trust", "date": "2026-05-24", "status": "Scheduled"}, {"id": "V110", "ref": "John 14:28", "title": "The Father Is Greater", "date": "2026-05-25", "status": "Scheduled"}, {"id": "V111", "ref": "Psalm 139:5", "title": "Surrounded by God", "date": "2026-05-26", "status": "Scheduled"}, {"id": "V112", "ref": "Proverbs 24:3-4", "title": "Wisdom Builds", "date": "2026-05-27", "status": "Scheduled"}, {"id": "V113", "ref": "John 3:7", "title": "You Must Be Born Again", "date": "2026-05-28", "status": "Scheduled"}, {"id": "V114", "ref": "2 Timothy 2:3", "title": "Endure Hardship", "date": "2026-05-29", "status": "Scheduled"}, {"id": "V115", "ref": "Roman 13:8", "title": "The Debt of Love", "date": "2026-05-30", "status": "Scheduled"}, {"id": "V116", "ref": "1 Corinthians 16:14", "title": "Do Everything in Love", "date": "2026-05-31", "status": "Scheduled"}, {"id": "V117", "ref": "James 1:25", "title": "The Blessing of Obedience", "date": "2026-06-01", "status": "Scheduled"}, {"id": "V118", "ref": "Ephesians 3:20-21", "title": "God Can Do More", "date": "2026-06-02", "status": "Scheduled"}, {"id": "V119", "ref": "Mark 1:15", "title": "The Time Is Now", "date": "2026-06-03", "status": "Scheduled"}, {"id": "V120", "ref": "Jeremiah 29:13", "title": "Seek and Find", "date": "2026-06-04", "status": "Scheduled"}, {"id": "V121", "ref": "Psalm 36:7", "title": "God’s Unfailing Love", "date": "2026-06-05", "status": "Scheduled"}, {"id": "V122", "ref": "Proverbs 13:20", "title": "Walk With the Wise", "date": "2026-06-06", "status": "Scheduled"}, {"id": "V123", "ref": "Genesis 1:27", "title": "Created in His Image", "date": "2026-06-07", "status": "Scheduled"}, {"id": "V124", "ref": "Psalm 1:1", "title": "Blessed Choices", "date": "2026-06-08", "status": "Scheduled"}, {"id": "V125", "ref": "Habakkuk 3:19", "title": "Strength for the Climb", "date": "2026-06-09", "status": "Scheduled"}, {"id": "V126", "ref": "James 1:13", "title": "God Does Not Tempt", "date": "2026-06-10", "status": "Scheduled"}, {"id": "V127", "ref": "Matthew 16:26", "title": "What Is Your Soul Worth", "date": "2026-06-11", "status": "Scheduled"}, {"id": "V128", "ref": "Proverbs 1:5", "title": "Grow in Wisdom", "date": "2026-06-12", "status": "Scheduled"}, {"id": "V129", "ref": "Proverbs 19:22", "title": "Loyalty Matters", "date": "2026-06-13", "status": "Scheduled"}, {"id": "V130", "ref": "1 Peter 5:7", "title": "Cast Your Cares", "date": "2026-06-14", "status": "Scheduled"}, {"id": "V131", "ref": "Psalm 121:7", "title": "God Protects You", "date": "2026-06-15", "status": "Scheduled"}, {"id": "V132", "ref": "Proverbs 31:30", "title": "True Beauty", "date": "2026-06-16", "status": "Scheduled"}, {"id": "V133", "ref": "Ecclesiastes 3:1", "title": "Seasons Have Purpose", "date": "2026-06-17", "status": "Scheduled"}, {"id": "V134", "ref": "John 11:26", "title": "Eternal Life", "date": "2026-06-18", "status": "Scheduled"}, {"id": "V135", "ref": "Acts 3:19-20", "title": "Refreshing From the Lord", "date": "2026-06-19", "status": "Scheduled"}, {"id": "V136", "ref": "Psalm 23:1-3", "title": "He Restores My Soul", "date": "2026-06-20", "status": "Scheduled"}, {"id": "V137", "ref": "Isaiah 41:10", "title": "Fear Not", "date": "2026-06-21", "status": "Scheduled"}, {"id": "V138", "ref": "Micah 6:8", "title": "Walk Humbly", "date": "2026-06-22", "status": "Scheduled"}, {"id": "V139", "ref": "Philippians 4:6-7", "title": "Peace Beyond Understanding", "date": "2026-06-23", "status": "Scheduled"}, {"id": "V140", "ref": "Roman 12:2", "title": "Renew Your Mind", "date": "2026-06-24", "status": "Scheduled"}, {"id": "V141", "ref": "Psalm 46:1", "title": "Ever-Present Help", "date": "2026-06-25", "status": "Scheduled"}, {"id": "V142", "ref": "Hebrews 11:1", "title": "Faith Defined", "date": "2026-06-26", "status": "Scheduled"}, {"id": "V143", "ref": "Colossians 3:23", "title": "Work Unto the Lord", "date": "2026-06-27", "status": "Scheduled"}, {"id": "V144", "ref": "Psalm 119:105", "title": "God’s Guidance", "date": "2026-06-28", "status": "Scheduled"}, {"id": "V145", "ref": "Isaiah 26:3", "title": "Perfect Peace", "date": "2026-06-29", "status": "Scheduled"}, {"id": "V146", "ref": "Matthew 11:28-30", "title": "Rest for the Weary", "date": "2026-06-30", "status": "Scheduled"}, {"id": "V147", "ref": "1 John 1:9", "title": "Forgiven and Cleansed", "date": "2026-07-01", "status": "Scheduled"}, {"id": "V148", "ref": "Proverbs 18:10", "title": "Safe Tower", "date": "2026-07-02", "status": "Scheduled"}, {"id": "V149", "ref": "Roman 15:13", "title": "Overflowing Hope", "date": "2026-07-03", "status": "Scheduled"}, {"id": "V150", "ref": "Lamentations 3:22-23", "title": "New Mercies", "date": "2026-07-04", "status": "Scheduled"}, {"id": "V151", "ref": "Psalm 46:10", "title": "Be Still", "date": "2026-07-05", "status": "Scheduled"}, {"id": "V152", "ref": "Ephesians 2:8-9", "title": "Saved by Grace", "date": "2026-07-06", "status": "Scheduled"}, {"id": "V153", "ref": "2 Peter 3:9", "title": "God Is Patient", "date": "2026-07-07", "status": "Scheduled"}, {"id": "V154", "ref": "Psalm 139:14", "title": "Wonderfully Made", "date": "2026-07-08", "status": "Scheduled"}, {"id": "V155", "ref": "Colossians 3:12-14", "title": "Put On Love", "date": "2026-07-09", "status": "Scheduled"}, {"id": "V156", "ref": "Psalm 37:4", "title": "Delight in the Lord", "date": "2026-07-10", "status": "Scheduled"}, {"id": "V157", "ref": "Isaiah 40:29", "title": "Strength to the Weak", "date": "2026-07-11", "status": "Scheduled"}, {"id": "V158", "ref": "James 4:8", "title": "Draw Near to God", "date": "2026-07-12", "status": "Scheduled"}, {"id": "V159", "ref": "Roman 5:8", "title": "Loved Before You Changed", "date": "2026-07-13", "status": "Scheduled"}, {"id": "V160", "ref": "Psalm 34:18", "title": "Close to the Brokenhearted", "date": "2026-07-14", "status": "Scheduled"}, {"id": "V161", "ref": "Galatians 6:9", "title": "Don’t Grow Weary", "date": "2026-07-15", "status": "Scheduled"}, {"id": "V162", "ref": "1 Peter 1:3", "title": "Living Hope", "date": "2026-07-16", "status": "Scheduled"}, {"id": "V163", "ref": "Psalm 37:23", "title": "Steps Ordered by God", "date": "2026-07-17", "status": "Scheduled"}, {"id": "V164", "ref": "John 8:12", "title": "Light of the World", "date": "2026-07-18", "status": "Scheduled"}, {"id": "V165", "ref": "Roman 15:4", "title": "Encouragement Through Scripture", "date": "2026-07-19", "status": "Scheduled"}, {"id": "V166", "ref": "Psalm 103:12", "title": "Forgiven Completely", "date": "2026-07-20", "status": "Scheduled"}, {"id": "V167", "ref": "Isaiah 43:2", "title": "He Will Be With You", "date": "2026-07-21", "status": "Scheduled"}, {"id": "V168", "ref": "Proverbs 12:25", "title": "Anxiety Weighs Down", "date": "2026-07-22", "status": "Scheduled"}, {"id": "V169", "ref": "Matthew 7:7", "title": "Ask, Seek, Knock", "date": "2026-07-23", "status": "Scheduled"}, {"id": "V170", "ref": "Psalm 19:14", "title": "Words That Please God", "date": "2026-07-24", "status": "Scheduled"}, {"id": "V171", "ref": "Colossians 1:17", "title": "Held Together in Christ", "date": "2026-07-25", "status": "Scheduled"}, {"id": "V172", "ref": "Hebrews 10:23", "title": "Hold Fast to Hope", "date": "2026-07-26", "status": "Scheduled"}, {"id": "V173", "ref": "Psalm 32:8", "title": "God Will Instruct You", "date": "2026-07-27", "status": "Scheduled"}, {"id": "V174", "ref": "1 Thessalonians 5:11", "title": "Encourage One Another", "date": "2026-07-28", "status": "Scheduled"}, {"id": "V175", "ref": "John 16:33", "title": "Peace in Trouble", "date": "2026-07-29", "status": "Scheduled"}, {"id": "V176", "ref": "Psalm 145:18", "title": "The Lord Is Near", "date": "2026-07-30", "status": "Scheduled"}, {"id": "V177", "ref": "Isaiah 58:11", "title": "Guided and Satisfied", "date": "2026-07-31", "status": "Scheduled"}, {"id": "V178", "ref": "Roman 8:1", "title": "No Condemnation", "date": "2026-08-01", "status": "Scheduled"}, {"id": "V179", "ref": "Psalm 73:26", "title": "Strength of My Heart", "date": "2026-08-02", "status": "Scheduled"}, {"id": "V180", "ref": "John 6:35", "title": "Bread of Life", "date": "2026-08-03", "status": "Scheduled"}, {"id": "V181", "ref": "Proverbs 11:25", "title": "Refresh Others", "date": "2026-08-04", "status": "Scheduled"}, {"id": "V182", "ref": "2 Corinthians 12:9", "title": "Grace Is Sufficient", "date": "2026-08-05", "status": "Scheduled"}, {"id": "V183", "ref": "Psalm 16:8", "title": "I Will Not Be Shaken", "date": "2026-08-06", "status": "Scheduled"}, {"id": "V184", "ref": "Matthew 7:24", "title": "Build on the Rock", "date": "2026-08-07", "status": "Scheduled"}, {"id": "V185", "ref": "Isaiah 30:21", "title": "This Is the Way", "date": "2026-08-08", "status": "Scheduled"}, {"id": "V186", "ref": "Psalm 20:7", "title": "Trust in the Lord", "date": "2026-08-09", "status": "Scheduled"}, {"id": "V187", "ref": "1 John 5:14", "title": "Confidence in Prayer", "date": "2026-08-10", "status": "Scheduled"}, {"id": "V188", "ref": "Colossians 3:2", "title": "Set Your Mind Above", "date": "2026-08-11", "status": "Scheduled"}, {"id": "V189", "ref": "Psalm 62:6", "title": "My Rock and Salvation", "date": "2026-08-12", "status": "Scheduled"}, {"id": "V190", "ref": "James 1:17", "title": "Every Good Gift", "date": "2026-08-13", "status": "Scheduled"}, {"id": "V191", "ref": "Roman 14:19", "title": "Pursue Peace", "date": "2026-08-14", "status": "Scheduled"}, {"id": "V192", "ref": "Psalm 90:17", "title": "Establish the Work", "date": "2026-08-15", "status": "Scheduled"}, {"id": "V193", "ref": "1 Peter 5:10", "title": "Restore and Strengthen", "date": "2026-08-16", "status": "Scheduled"}, {"id": "V194", "ref": "John 15:5", "title": "Abide in Me", "date": "2026-08-17", "status": "Scheduled"}, {"id": "V195", "ref": "Psalm 33:4", "title": "His Word Is Faithful", "date": "2026-08-18", "status": "Scheduled"}, {"id": "V196", "ref": "Psalm 18:2", "title": "My Rock and Fortress", "date": "2026-08-19", "status": "Scheduled"}, {"id": "V197", "ref": "Isaiah 41:13", "title": "God Holds Your Hand", "date": "2026-08-20", "status": "Scheduled"}, {"id": "V198", "ref": "Romans 12:12", "title": "Joy, Patience, Prayer", "date": "2026-08-21", "status": "Scheduled"}, {"id": "V199", "ref": "Psalm 27:1", "title": "The Lord Is My Light", "date": "2026-08-22", "status": "Scheduled"}, {"id": "V200", "ref": "Philippians 4:19", "title": "God Provides", "date": "2026-08-23", "status": "Scheduled"}, {"id": "V201", "ref": "Psalm 46:10", "title": "Be Still", "date": "2026-08-24", "status": "Scheduled"}, {"id": "V202", "ref": "Hebrews 4:16", "title": "Grace in Time of Need", "date": "2026-08-25", "status": "Scheduled"}, {"id": "V203", "ref": "Psalm 121:2", "title": "Help From the Lord", "date": "2026-08-26", "status": "Scheduled"}, {"id": "V204", "ref": "2 Timothy 1:7", "title": "Spirit of Power", "date": "2026-08-27", "status": "Scheduled"}, {"id": "V205", "ref": "Psalm 30:5", "title": "Joy Comes in the Morning", "date": "2026-08-28", "status": "Scheduled"}, {"id": "V206", "ref": "John 14:27", "title": "Peace I Leave With You", "date": "2026-08-29", "status": "Scheduled"}, {"id": "V207", "ref": "Psalm 9:10", "title": "Trust in His Name", "date": "2026-08-30", "status": "Scheduled"}, {"id": "V208", "ref": "1 Corinthians 15:58", "title": "Steadfast in the Lord", "date": "2026-08-31", "status": "Scheduled"}, {"id": "V209", "ref": "Psalm 55:22", "title": "Cast Your Burden", "date": "2026-09-01", "status": "Scheduled"}, {"id": "V210", "ref": "Ephesians 3:20", "title": "Exceedingly Abundantly", "date": "2026-09-02", "status": "Scheduled"}, {"id": "V211", "ref": "Psalm 118:24", "title": "This Is the Day", "date": "2026-09-03", "status": "Scheduled"}, {"id": "V212", "ref": "James 1:5", "title": "Ask for Wisdom", "date": "2026-09-04", "status": "Scheduled"}, {"id": "V213", "ref": "Psalm 103:2", "title": "Forget Not His Benefits", "date": "2026-09-05", "status": "Scheduled"}, {"id": "V214", "ref": "1 Peter 3:12", "title": "The Lord Hears You", "date": "2026-09-06", "status": "Scheduled"}, {"id": "V215", "ref": "Psalm 40:1", "title": "He Heard My Cry", "date": "2026-09-07", "status": "Scheduled"}, {"id": "V216", "ref": "Nahum 1:7", "title": "The Lord Is My Stronghold", "date": "2026-09-08", "status": "Scheduled"}, {"id": "V217", "ref": "Haggai 2:9", "title": "Greater Glory Ahead", "date": "2026-09-09", "status": "Scheduled"}, {"id": "V218", "ref": "Zephaniah 3:5", "title": "The Lord Is Righteous", "date": "2026-09-10", "status": "Scheduled"}, {"id": "V219", "ref": "Obadiah 1:17", "title": "Deliverance Belongs to God", "date": "2026-09-11", "status": "Scheduled"}, {"id": "V220", "ref": "Philemon 1:6", "title": "Make Your Faith Effective", "date": "2026-09-12", "status": "Scheduled"}, {"id": "V221", "ref": "3 John 1:4", "title": "Walking in Truth", "date": "2026-09-13", "status": "Pending"}, {"id": "V222", "ref": "Joel 2:12", "title": "Return to Me", "date": "2026-09-14", "status": "Pending"}, {"id": "V223", "ref": "Amos 5:24", "title": "Let Justice Roll", "date": "2026-09-15", "status": "Pending"}, {"id": "V224", "ref": "Malachi 4:2", "title": "Healing in His Wings", "date": "2026-09-16", "status": "Pending"}, {"id": "V225", "ref": "Titus 2:11", "title": "Grace Appeared", "date": "2026-09-17", "status": "Pending"}, {"id": "V226", "ref": "2 John 1:6", "title": "Walk in Love", "date": "2026-09-18", "status": "Pending"}, {"id": "V227", "ref": "Micah 7:7", "title": "I Will Wait for God", "date": "2026-09-19", "status": "Pending"}, {"id": "V228", "ref": "Nehemiah 9:6", "title": "You Alone Are Lord", "date": "2026-09-20", "status": "Pending"}, {"id": "V229", "ref": "Daniel 2:21", "title": "God Changes Times and Seasons", "date": "2026-09-21", "status": "Pending"}, {"id": "V230", "ref": "Psalm 62:8", "title": "Refuge for the Broken", "date": "2026-09-22T05:00:00.000Z", "status": "Pending"}, {"id": "V231", "ref": "Isaiah 43:1", "title": "Called by Name", "date": "2026-09-23T05:00:00.000Z", "status": "Pending"}, {"id": "V232", "ref": "Philippians 1:6", "title": "He Will Finish It", "date": "2026-09-24T05:00:00.000Z", "status": "Pending"}, {"id": "V233", "ref": "Psalm 119:11", "title": "Guarded by His Word", "date": "2026-09-25T05:00:00.000Z", "status": "Pending"}, {"id": "V234", "ref": "Galatians 2:20", "title": "Christ Lives in You", "date": "2026-09-26T05:00:00.000Z", "status": "Pending"}, {"id": "V235", "ref": "Hebrews 11:6", "title": "Faith That Pleases God", "date": "2026-09-27T05:00:00.000Z", "status": "Pending"}, {"id": "V236", "ref": "Matthew 28:20", "title": "Never Alone", "date": "2026-09-28T05:00:00.000Z", "status": "Pending"}, {"id": "V237", "ref": "Psalm 46:5", "title": "Unshakable Strength", "date": "2026-09-29T05:00:00.000Z", "status": "Pending"}, {"id": "V238", "ref": "Romans 5:1", "title": "Peace With God", "date": "2026-09-30T05:00:00.000Z", "status": "Pending"}, {"id": "V239", "ref": "1 Thessalonians 5:16", "title": "Choose Joy", "date": "2026-10-01T05:00:00.000Z", "status": "Pending"}, {"id": "V240", "ref": "Romans 8:28", "title": "All Things Work Together", "date": "2026-10-02", "status": "Pending"}, {"id": "V241", "ref": "Matthew 17:20", "title": "Faith Moves Mountains", "date": "2026-10-03", "status": "Pending"}, {"id": "V242", "ref": "Psalm 4:8", "title": "Peaceful Sleep", "date": "2026-10-04", "status": "Pending"}, {"id": "V243", "ref": "Psalm 43:3-5", "title": "Hope in God", "date": "2026-10-05", "status": "Pending"}, {"id": "V244", "ref": "Psalm 142:5", "title": "You Are My Refuge", "date": "2026-10-06", "status": "Pending"}, {"id": "V245", "ref": "Psalm 16:1-2", "title": "God Is My Good", "date": "2026-10-07", "status": "Pending"}, {"id": "V246", "ref": "Psalm 6:9", "title": "The Lord Hears My Cry", "date": "2026-10-08", "status": "Pending"}, {"id": "V247", "ref": "Ruth 1:16-17", "title": "Committed to God", "date": "2026-10-09", "status": "Pending"}, {"id": "V248", "ref": "Genesis 12:2-3", "title": "Blessed to Be a Blessing", "date": "2026-10-10", "status": "Pending"}, {"id": "V249", "ref": "Genesis 9:13", "title": "God’s Covenant Promise", "date": "2026-10-11", "status": "Pending"}, {"id": "V250", "ref": "Exodus 14:14", "title": "The Lord Fights for You", "date": "2026-10-12", "status": "Pending"}, {"id": "V251", "ref": "1 Timothy 6:12", "title": "Fight the Good Fight of Faith", "date": "2026-10-13", "status": "Pending"}, {"id": "V252", "ref": "Revelation 21:4", "title": "No More Tears", "date": "2026-10-14", "status": "Pending"}, {"id": "V253", "ref": "Zechariah 4:6", "title": "Not by Might", "date": "2026-10-15", "status": "Pending"}, {"id": "V254", "ref": "Job 19:25", "title": "My Redeemer Lives", "date": "2026-10-16", "status": "Pending"}, {"id": "V255", "ref": "Esther 4:14", "title": "Born for This Moment", "date": "2026-10-17", "status": "Pending"}, {"id": "V256", "ref": "2 Samuel 22:31", "title": "God’s Way Is Perfect", "date": "2026-10-18", "status": "Pending"}, {"id": "V257", "ref": "1 Kings 19:11-12", "title": "The Gentle Whisper", "date": "2026-10-19", "status": "Pending"}, {"id": "V258", "ref": "Jonah 2:9", "title": "Salvation Belongs to the Lord", "date": "2026-10-20", "status": "Pending"}, {"id": "V259", "ref": "Hosea 6:3", "title": "Press On to Know the Lord", "date": "2026-10-21", "status": "Pending"}, {"id": "V260", "ref": "Numbers 6:24-26", "title": "The Lord Bless You and Keep You", "date": "2026-10-22", "status": "Pending"}, {"id": "V261", "ref": "Leviticus 19:18", "title": "Love Your Neighbor as Yourself", "date": "2026-10-23", "status": "Pending"}, {"id": "V262", "ref": "Judges 6:12", "title": "The Lord Is With You, Mighty Warrior", "date": "2026-10-24", "status": "Pending"}, {"id": "V263", "ref": "2 Kings 6:16", "title": "Those With Us Are More", "date": "2026-10-25", "status": "Pending"}, {"id": "V264", "ref": "1 Chronicles 16:11", "title": "Seek the Lord and His Strength", "date": "2026-10-26", "status": "Pending"}, {"id": "V265", "ref": "1 Chronicles 29:11", "title": "Yours, Lord, Is the Greatness", "date": "2026-10-27", "status": "Pending"}, {"id": "V266", "ref": "Ezra 7:10", "title": "Devoted to God’s Word", "date": "2026-10-28", "status": "Pending"}, {"id": "V267", "ref": "Song of Solomon 2:11-12", "title": "The Winter Is Past", "date": "2026-10-29", "status": "Pending"}, {"id": "V268", "ref": "Deuteronomy 33:27", "title": "The Eternal God Is Your Refuge", "date": "2026-10-30", "status": "Pending"}, {"id": "V269", "ref": "Psalm 91:1-2", "title": "Under the Shadow of the Almighty", "date": "2026-10-31", "status": "Pending"}, {"id": "V270", "ref": "Psalm 100:1-3", "title": "Enter His Presence with Joy", "date": "2026-11-01", "status": "Pending"}, {"id": "V271", "ref": "Proverbs 16:9", "title": "God Directs Your Steps", "date": "2026-11-02", "status": "Pending"}, {"id": "V272", "ref": "Lamentations 3:25-26", "title": "Good to Those Who Wait", "date": "2026-11-03", "status": "Pending"}, {"id": "V273", "ref": "John 14:1-2", "title": "Do Not Let Your Hearts Be Troubled", "date": "2026-11-04", "status": "Pending"}, {"id": "V274", "ref": "2 Corinthians 1:3-4", "title": "The God of All Comfort", "date": "2026-11-05", "status": "Pending"}, {"id": "V275", "ref": "Galatians 5:1", "title": "Stand Firm in Freedom", "date": "2026-11-06", "status": "Pending"}, {"id": "V276", "ref": "Colossians 3:15", "title": "Let the Peace of Christ Rule", "date": "2026-11-07", "status": "Pending"}, {"id": "V277", "ref": "Hebrews 12:1-2", "title": "Run the Race with Endurance", "date": "2026-11-08", "status": "Pending"}, {"id": "V278", "ref": "1 Peter 2:9", "title": "Called Out of Darkness", "date": "2026-11-09", "status": "Pending"}, {"id": "V279", "ref": "Revelation 3:20", "title": "Open the Door to Christ", "date": "2026-11-10", "status": "Pending"}, {"id": "V280", "ref": "Genesis 28:15", "title": "I Am With You Wherever You Go", "date": "2026-11-11", "status": "Pending"}, {"id": "V281", "ref": "Exodus 33:14", "title": "My Presence Will Go With You", "date": "2026-11-12", "status": "Pending"}, {"id": "V282", "ref": "Deuteronomy 7:9", "title": "The Faithful God", "date": "2026-11-13", "status": "Pending"}, {"id": "V283", "ref": "Psalm 27:14", "title": "Wait for the Lord and Be Strong", "date": "2026-11-14", "status": "Pending"}, {"id": "V284", "ref": "Psalm 138:8", "title": "The Lord Will Fulfill His Purpose", "date": "2026-11-15", "status": "Pending"}, {"id": "V285", "ref": "Proverbs 18:21", "title": "The Power of Your Words", "date": "2026-11-16", "status": "Pending"}, {"id": "V286", "ref": "Isaiah 12:2", "title": "God Is My Salvation", "date": "2026-11-17", "status": "Pending"}, {"id": "V287", "ref": "Luke 1:37", "title": "Nothing Is Impossible With God", "date": "2026-11-18", "status": "Pending"}, {"id": "V288", "ref": "Ephesians 4:32", "title": "Kind, Tenderhearted, and Forgiving", "date": "2026-11-19", "status": "Pending"}, {"id": "V289", "ref": "James 4:7", "title": "Submit to God, Resist the Enemy", "date": "2026-11-20", "status": "Pending"}, {"id": "V290", "ref": "Psalm 61:2", "title": "Lead Me to the Rock", "date": "2026-11-21", "status": "Pending"}, {"id": "V291", "ref": "Isaiah 33:6", "title": "Stability for Your Times", "date": "2026-11-22", "status": "Pending"}, {"id": "V292", "ref": "Jeremiah 33:3", "title": "Call to Me and I Will Answer", "date": "2026-11-23", "status": "Pending"}, {"id": "V293", "ref": "Matthew 5:14-16", "title": "Let Your Light Shine", "date": "2026-11-24", "status": "Pending"}, {"id": "V294", "ref": "Luke 12:32", "title": "The Father’s Good Pleasure", "date": "2026-11-25", "status": "Pending"}, {"id": "V295", "ref": "Acts 17:28", "title": "In Him We Live and Move", "date": "2026-11-26", "status": "Pending"}, {"id": "V296", "ref": "Romans 12:21", "title": "Overcome Evil with Good", "date": "2026-11-27", "status": "Pending"}, {"id": "V297", "ref": "Ephesians 5:15-16", "title": "Walk Wisely Today", "date": "2026-11-28", "status": "Pending"}, {"id": "V298", "ref": "Colossians 4:2", "title": "Devoted to Prayer", "date": "2026-11-29", "status": "Pending"}, {"id": "V299", "ref": "Hebrews 13:8", "title": "Jesus Never Changes", "date": "2026-11-30", "status": "Pending"}, {"id": "V300", "ref": "Psalm 119:165", "title": "Great Peace in God’s Word", "date": "2026-12-01", "status": "Pending"}, {"id": "V301", "ref": "Proverbs 4:23", "title": "Guard Your Heart", "date": "2026-12-02", "status": "Pending"}, {"id": "V302", "ref": "Isaiah 54:17", "title": "No Weapon Shall Prosper", "date": "2026-12-03", "status": "Pending"}, {"id": "V303", "ref": "Jeremiah 17:14", "title": "Heal Me, Lord", "date": "2026-12-04", "status": "Pending"}, {"id": "V304", "ref": "Matthew 19:26", "title": "With God All Things Are Possible", "date": "2026-12-05", "status": "Pending"}, {"id": "V305", "ref": "Mark 11:24", "title": "Believe When You Pray", "date": "2026-12-06", "status": "Pending"}, {"id": "V306", "ref": "John 15:11", "title": "Fullness of Joy in Christ", "date": "2026-12-07", "status": "Pending"}, {"id": "V307", "ref": "1 Corinthians 10:13", "title": "God Always Provides a Way Out", "date": "2026-12-08", "status": "Pending"}, {"id": "V308", "ref": "Ephesians 6:10-11", "title": "Put On the Armor of God", "date": "2026-12-09", "status": "Pending"}, {"id": "V309", "ref": "1 John 3:1", "title": "Lavished With the Father’s Love", "date": "2026-12-10", "status": "Pending"}];
+const STORAGE_KEY = 'bathan_scripture_tracker_v2';
+let videos = [];
+let editingIndex = null;
 
-function normalizeBook(name) {
-  if (!name) return "";
-  let b = name.trim().toLowerCase();
-  if (b === "roman" || b === "romans") return "Romans";
-  if (b === "psalm" || b === "psalms") return "Psalm";
-  if (b === "mathhew" || b === "matthew") return "Matthew";
-  return name.trim();
+function parseVideoNum(idStr) {
+  if (!idStr) return 999999;
+  const match = String(idStr).match(/(\d+)/);
+  return match ? parseInt(match[1], 10) : 999999;
+}
+
+function sortVideos() {
+  videos.sort((a, b) => {
+    const numA = parseVideoNum(a.id);
+    const numB = parseVideoNum(b.id);
+    if (numA !== numB) return numA - numB;
+    return String(a.id).localeCompare(String(b.id));
+  });
+}
+
+function loadVideos() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    try {
+      videos = JSON.parse(saved);
+    } catch (e) {
+      videos = [...DEFAULT_VIDEOS];
+    }
+  } else {
+    videos = [...DEFAULT_VIDEOS];
+  }
+  sortVideos();
+  saveVideos(false);
+}
+
+function saveVideos(reRender = true) {
+  sortVideos();
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(videos));
+  if (reRender) {
+    updateStats();
+    populateBookFilter();
+    renderTable();
+  }
+}
+
+function resetToDefault() {
+  if (confirm("Sync your list with the updated 309-video catalog (V01–V309)? This will fix any out-of-order rows and load all latest entries.")) {
+    videos = [...DEFAULT_VIDEOS];
+    editingIndex = null;
+    saveVideos(true);
+  }
+}
+
+function normalizeBook(raw) {
+  if (!raw) return "";
+  let b = raw.trim().toLowerCase();
+  const map = {
+    "roman": "Romans", "romans": "Romans",
+    "psalm": "Psalm", "psalms": "Psalm",
+    "mathhew": "Matthew", "matthew": "Matthew",
+    "1 corinthian": "1 Corinthians", "1 corinthians": "1 Corinthians",
+    "2 corinthian": "2 Corinthians", "2 corinthians": "2 Corinthians",
+    "1 thessalonian": "1 Thessalonians", "1 thessalonians": "1 Thessalonians",
+    "2 thessalonian": "2 Thessalonians", "2 thessalonians": "2 Thessalonians",
+    "philippian": "Philippians", "philippians": "Philippians",
+    "colossian": "Colossians", "colossians": "Colossians",
+    "ephesian": "Ephesians", "ephesians": "Ephesians",
+    "galatian": "Galatians", "galatians": "Galatians",
+    "hebrew": "Hebrews", "hebrews": "Hebrews",
+    "proverb": "Proverbs", "proverbs": "Proverbs",
+    "revelations": "Revelation", "revelation": "Revelation",
+    "song of songs": "Song of Solomon", "song of solomon": "Song of Solomon"
+  };
+  if (map[b]) return map[b];
+  return raw.trim().replace(/\b\w/g, c => c.toUpperCase());
 }
 
 function parseScripture(text) {
   if (!text) return null;
-  const m = text.trim().match(/^((?:\d\s+)?[A-Za-z]+(?:\s+[A-Za-z]+)?)\s*(\d+)(?:[:\.](\d+)(?:-(\d+))?)?$/);
+  const clean = text.replace(/–|—/g, '-').trim();
+  const m = clean.match(/^((?:\d\s+)?[A-Za-z]+(?:\s+[A-Za-z]+)*)\s*(\d+)(?:[:\.](\d+)(?:-(\d+))?)?$/);
   if (!m) return null;
   const book = normalizeBook(m[1]);
   const chap = parseInt(m[2], 10);
   const start = m[3] ? parseInt(m[3], 10) : null;
   const end = m[4] ? parseInt(m[4], 10) : start;
-  return { book, chap, start, end };
+  return { book, bookLower: book.toLowerCase(), chap, start, end };
 }
 
-function scripturesOverlap(ref1, ref2) {
-  if (!ref1 || !ref2) return false;
-  const p1 = parseScripture(ref1);
-  const p2 = parseScripture(ref2);
+function referencesOverlap(r1, r2) {
+  const p1 = parseScripture(r1);
+  const p2 = parseScripture(r2);
   if (!p1 || !p2) {
-    const s1 = ref1.toLowerCase().trim();
-    const s2 = ref2.toLowerCase().trim();
-    return s1.includes(s2) || s2.includes(s1);
+    return r1.trim().toLowerCase() === r2.trim().toLowerCase();
   }
-  if (p1.book.toLowerCase() !== p2.book.toLowerCase() || p1.chap !== p2.chap) return false;
+  if (p1.bookLower !== p2.bookLower || p1.chap !== p2.chap) return false;
   if (p1.start === null || p2.start === null) return true;
   return Math.max(p1.start, p2.start) <= Math.min(p1.end, p2.end);
 }
 
-function findMatches(queryText) {
-  if (!queryText || queryText.trim().length < 2) return [];
-  return videos.filter(v => scripturesOverlap(queryText, v.ref));
-}
-
-function loadVideos() {
-  const saved = localStorage.getItem('ministry_videos_tracker');
-  if (saved) {
-    try {
-      const parsed = JSON.parse(saved);
-      if (parsed.length >= INITIAL_DATA.length) return parsed;
-    } catch(e) {}
+function checkPassage() {
+  const q = document.getElementById('checkInput').value.trim();
+  const banner = document.getElementById('checkBanner');
+  if (!q) {
+    banner.className = 'banner';
+    banner.innerHTML = '';
+    return;
   }
-  return [...INITIAL_DATA];
+  const matches = videos.filter(v => referencesOverlap(q, v.ref));
+  if (matches.length > 0) {
+    const list = matches.map(m => `<strong>${m.id}</strong> (${m.ref} — ${m.title}, ${m.date || 'No date'})`).join('; ');
+    banner.className = 'banner duplicate';
+    banner.innerHTML = `⚠️ <strong>ALREADY USED:</strong> Found in ${list}`;
+  } else {
+    banner.className = 'banner available';
+    banner.innerHTML = `✅ <strong>AVAILABLE:</strong> "${q}" has not been used yet!`;
+  }
 }
 
-let videos = loadVideos();
+function liveAddCheck() {
+  const q = document.getElementById('newRef').value.trim();
+  const banner = document.getElementById('addBanner');
+  if (!q) {
+    banner.className = 'banner';
+    banner.innerHTML = '';
+    return;
+  }
+  const matches = videos.filter(v => referencesOverlap(q, v.ref));
+  if (matches.length > 0) {
+    const list = matches.map(m => `${m.id} (${m.ref})`).join(', ');
+    banner.className = 'banner duplicate';
+    banner.innerHTML = `⚠️ Heads up: Overlaps with existing entry ${list}`;
+  } else {
+    banner.className = 'banner available';
+    banner.innerHTML = `✅ Passage is unused and ready to add.`;
+  }
+}
 
-function saveVideos() {
-  localStorage.setItem('ministry_videos_tracker', JSON.stringify(videos));
-  updateStats();
+function suggestNextIdAndDate() {
+  if (videos.length === 0) {
+    document.getElementById('newId').value = 'V01';
+    return;
+  }
+  const last = videos[videos.length - 1];
+  const num = parseVideoNum(last.id);
+  if (num < 999999) {
+    document.getElementById('newId').value = 'V' + (num + 1);
+  }
+  if (last.date && /^\d{4}-\d{2}-\d{2}$/.test(last.date)) {
+    const d = new Date(last.date + 'T12:00:00');
+    d.setDate(d.getDate() + 1);
+    document.getElementById('newDate').value = d.toISOString().split('T')[0];
+  }
+}
+
+function addVideo() {
+  const id = document.getElementById('newId').value.trim();
+  const ref = document.getElementById('newRef').value.trim();
+  const title = document.getElementById('newTitle').value.trim();
+  const date = document.getElementById('newDate').value.trim();
+  const status = document.getElementById('newStatus').value;
+
+  if (!id || !ref) {
+    alert('Please enter at least a Video # and Scripture Reference.');
+    return;
+  }
+
+  videos.push({ id, ref, title: title || 'Untitled Devotional', date, status });
+  saveVideos(true);
+
+  document.getElementById('newRef').value = '';
+  document.getElementById('newTitle').value = '';
+  document.getElementById('addBanner').className = 'banner';
+  suggestNextIdAndDate();
+}
+
+function startEdit(idx) {
+  editingIndex = idx;
   renderTable();
 }
 
-function updateVideoStatus(vidNumber, newStatus) {
-  const target = videos.find(v => v.video === vidNumber);
-  if (target) {
-    target.status = newStatus;
-    localStorage.setItem('ministry_videos_tracker', JSON.stringify(videos));
-    updateStats();
-    renderTable(document.getElementById('filterInput').value);
+function cancelEdit() {
+  editingIndex = null;
+  renderTable();
+}
+
+function saveEdit(idx) {
+  const id = document.getElementById(`edit-id-${idx}`).value.trim();
+  const ref = document.getElementById(`edit-ref-${idx}`).value.trim();
+  const title = document.getElementById(`edit-title-${idx}`).value.trim();
+  const date = document.getElementById(`edit-date-${idx}`).value.trim();
+  const status = document.getElementById(`edit-status-${idx}`).value;
+
+  if (!id || !ref) {
+    alert('Video # and Scripture Reference cannot be empty.');
+    return;
+  }
+
+  videos[idx] = { id, ref, title, date, status };
+  editingIndex = null;
+  saveVideos(true);
+}
+
+function deleteVideo(idx) {
+  const v = videos[idx];
+  if (confirm(`Delete ${v.id} (${v.ref})?`)) {
+    videos.splice(idx, 1);
+    if (editingIndex === idx) editingIndex = null;
+    saveVideos(true);
   }
 }
 
-function getDuplicateMap() {
-  const map = {};
-  videos.forEach(v => {
-    const dups = videos.filter(other => other.video !== v.video && scripturesOverlap(v.ref, other.ref));
-    if (dups.length > 0) map[v.video] = true;
-  });
-  return map;
-}
-
 function updateStats() {
-  document.getElementById('statTotalVideos').innerText = videos.length;
-  document.getElementById('tableCount').innerText = videos.length;
-
-  const scheduledCount = videos.filter(v => v.status === "Scheduled").length;
-  document.getElementById('statScheduled').innerText = scheduledCount;
-
-  const dupMap = getDuplicateMap();
-  const dupCount = Object.keys(dupMap).length;
-  document.getElementById('statDuplicates').innerText = dupCount;
+  document.getElementById('statTotal').textContent = videos.length;
+  document.getElementById('dirCount').textContent = videos.length;
+  document.getElementById('statScheduled').textContent = videos.filter(v => v.status === 'Scheduled').length;
 
   const books = new Set();
   videos.forEach(v => {
     const p = parseScripture(v.ref);
-    if (p) books.add(p.book.toLowerCase());
+    if (p && p.book) books.add(p.book);
   });
-  document.getElementById('statBooksUsed').innerText = `${books.size} / 66`;
-}
+  document.getElementById('statBooks').textContent = `${books.size} / 66`;
 
-function getStatusClass(status) {
-  if (status === "Scheduled") return "status-scheduled";
-  if (status === "Exported") return "status-exported";
-  return "status-pending";
-}
-
-function renderTable(filter = "") {
-  const tbody = document.getElementById('tableBody');
-  tbody.innerHTML = "";
-  const dupMap = getDuplicateMap();
-
-  const filtered = videos.filter(v => {
-    if (!filter) return true;
-    const term = filter.toLowerCase();
-    return (v.video && v.video.toLowerCase().includes(term)) ||
-           (v.ref && v.ref.toLowerCase().includes(term)) ||
-           (v.title && v.title.toLowerCase().includes(term)) ||
-           (v.date && v.date.toLowerCase().includes(term)) ||
-           (v.status && v.status.toLowerCase().includes(term));
-  });
-
-  filtered.forEach(v => {
-    const tr = document.createElement('tr');
-    const isDup = !!dupMap[v.video];
-    const curStatus = v.status || 'Pending';
-    const statusClass = getStatusClass(curStatus);
-
-    tr.innerHTML = `
-      <td><strong>${v.video || ''}</strong></td>
-      <td>
-        ${v.ref || ''}
-        ${isDup ? '<span class="badge badge-dup" title="Overlaps with another video">Duplicate</span>' : ''}
-      </td>
-      <td>${v.title || ''}</td>
-      <td>${v.date ? v.date.substring(0,10) : ''}</td>
-      <td>
-        <select class="status-select ${statusClass}" onchange="updateVideoStatus('${v.video}', this.value)">
-          <option value="Scheduled" ${curStatus === 'Scheduled' ? 'selected' : ''}>Scheduled</option>
-          <option value="Pending" ${curStatus === 'Pending' || curStatus === 'Not Scheduled' ? 'selected' : ''}>Pending</option>
-          <option value="Exported" ${curStatus === 'Exported' ? 'selected' : ''}>Exported</option>
-        </select>
-      </td>
-      <td><button class="action-btn" onclick="deleteVideo('${v.video}')" title="Delete entry">🗑️</button></td>
-    `;
-    tbody.appendChild(tr);
-  });
-}
-
-function filterTable() {
-  const q = document.getElementById('filterInput').value;
-  renderTable(q);
-}
-
-function checkScripture() {
-  const raw = document.getElementById('searchInput').value;
-  const box = document.getElementById('resultBox');
-  if (!raw.trim()) {
-    box.style.display = 'none';
-    return;
+  let dupes = 0;
+  for (let i = 0; i < videos.length; i++) {
+    for (let j = i + 1; j < videos.length; j++) {
+      if (referencesOverlap(videos[i].ref, videos[j].ref)) {
+        dupes++;
+        break;
+      }
+    }
   }
-
-  const matches = findMatches(raw);
-  box.style.display = 'block';
-
-  if (matches.length > 0) {
-    box.className = 'alert alert-warning';
-    const list = matches.map(m => `• <strong>${m.video}</strong>: "${m.ref}" — <em>${m.title}</em> [${m.status || 'Pending'}] (${m.date ? m.date.substring(0,10) : 'No date'})`).join('<br>');
-    box.innerHTML = `⚠️ <strong>MATCH FOUND (${matches.length} video${matches.length > 1 ? 's' : ''}):</strong><br>${list}<br><br>💡 This passage is already recorded in your catalog!`;
-  } else {
-    box.className = 'alert alert-success';
-    box.innerHTML = `✅ <strong>AVAILABLE:</strong> No videos found matching "<strong>${raw}</strong>". You are clear to create this video!`;
-  }
+  document.getElementById('statDupes').textContent = dupes;
 }
 
-function checkNewVideoInput() {
-  const raw = document.getElementById('newRef').value;
-  const alertBox = document.getElementById('newRefAlert');
-  if (!raw.trim() || raw.trim().length < 3) {
-    alertBox.style.display = 'none';
-    return;
-  }
-
-  const matches = findMatches(raw);
-  if (matches.length > 0) {
-    alertBox.style.display = 'block';
-    alertBox.className = 'alert alert-warning';
-    const list = matches.map(m => `<strong>${m.video}</strong> ("${m.ref}" — <em>${m.title}</em>)`).join(', ');
-    alertBox.innerHTML = `⚠️ <strong>Warning:</strong> "${raw}" overlaps with existing entry: ${list}`;
-  } else {
-    alertBox.style.display = 'none';
-  }
-}
-
-function addNewVideo() {
-  const vid = document.getElementById('newVid').value.trim();
-  const ref = document.getElementById('newRef').value.trim();
-  const title = document.getElementById('newTitle').value.trim();
-  const date = document.getElementById('newDate').value;
-  const status = document.getElementById('newStatus').value;
-
-  if (!vid || !ref) {
-    alert("Please provide at least a Video # (e.g., V270) and a Scripture Reference.");
-    return;
-  }
-
-  const matches = findMatches(ref);
-  if (matches.length > 0) {
-    const list = matches.map(m => `${m.video} (${m.ref})`).join(', ');
-    const proceed = confirm(`⚠️ Warning: This passage is ALREADY USED in: ${list}.\n\nDo you still want to save it as a duplicate?`);
-    if (!proceed) return;
-  }
-
-  videos.push({
-    video: vid,
-    ref: ref,
-    title: title || "Untitled Video",
-    date: date || "",
-    status: status
-  });
-
-  saveVideos();
-
-  document.getElementById('newVid').value = "V" + (parseInt(vid.replace(/\D/g, '') || 0) + 1);
-  document.getElementById('newRef').value = "";
-  document.getElementById('newTitle').value = "";
-  document.getElementById('newDate').value = "";
-  document.getElementById('newRefAlert').style.display = 'none';
-  
-  alert(`Added ${vid} (${ref}) successfully!`);
-}
-
-function deleteVideo(videoNum) {
-  if (!confirm(`Are you sure you want to delete video ${videoNum}?`)) return;
-  videos = videos.filter(v => v.video !== videoNum);
-  saveVideos();
-}
-
-function exportToCSV() {
-  let csv = "Video #,Scripture Reference,Topic / Title,Scheduled Date,Status\n";
+function populateBookFilter() {
+  const select = document.getElementById('bookFilter');
+  const current = select.value;
+  const books = new Set();
   videos.forEach(v => {
-    csv += `"${v.video || ''}","${v.ref || ''}","${(v.title || '').replace(/"/g, '""')}","${v.date ? v.date.substring(0,10) : ''}","${v.status || ''}"\n`;
+    const p = parseScripture(v.ref);
+    if (p && p.book) books.add(p.book);
   });
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.setAttribute("download", "Ministry_Scripture_Tracker_Updated.csv");
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+  const sortedBooks = Array.from(books).sort();
+  select.innerHTML = '<option value="">All Bible Books</option>' +
+    sortedBooks.map(b => `<option value="${b}">${b}</option>`).join('');
+  select.value = current;
 }
 
-function importCSVFile(event) {
+function renderTable() {
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  const bookF = document.getElementById('bookFilter').value;
+  const statusF = document.getElementById('statusFilter').value;
+  const tbody = document.getElementById('tableBody');
+
+  const rowsHtml = [];
+  videos.forEach((v, idx) => {
+    const parsed = parseScripture(v.ref);
+    const bookName = parsed ? parsed.book : '';
+
+    if (bookF && bookName !== bookF) return;
+    if (statusF && v.status !== statusF) return;
+    if (q) {
+      const hay = `${v.id} ${v.ref} ${v.title} ${v.date} ${v.status}`.toLowerCase();
+      if (!hay.includes(q)) return;
+    }
+
+    if (editingIndex === idx) {
+      rowsHtml.push(`
+        <tr style="background:#eff6ff;">
+          <td><input class="edit-input" id="edit-id-${idx}" value="${v.id}" style="width:75px;" /></td>
+          <td><input class="edit-input" id="edit-ref-${idx}" value="${v.ref}" style="width:140px;" /></td>
+          <td><input class="edit-input" id="edit-title-${idx}" value="${v.title}" /></td>
+          <td><input class="edit-input" type="date" id="edit-date-${idx}" value="${v.date}" /></td>
+          <td>
+            <select class="edit-input" id="edit-status-${idx}">
+              <option value="Scheduled" ${v.status === 'Scheduled' ? 'selected' : ''}>Scheduled</option>
+              <option value="Pending" ${v.status === 'Pending' ? 'selected' : ''}>Pending</option>
+              <option value="Exported" ${v.status === 'Exported' ? 'selected' : ''}>Exported</option>
+            </select>
+          </td>
+          <td>
+            <div class="action-group">
+              <button class="btn-save" onclick="saveEdit(${idx})">Save</button>
+              <button class="btn-secondary" style="padding:5px 8px; font-size:0.8rem;" onclick="cancelEdit()">Cancel</button>
+            </div>
+          </td>
+        </tr>
+      `);
+    } else {
+      rowsHtml.push(`
+        <tr>
+          <td><strong>${v.id}</strong></td>
+          <td>${v.ref}</td>
+          <td>${v.title}</td>
+          <td>${v.date || '<span style="color:#9ca3af;">—</span>'}</td>
+          <td><span class="badge badge-${v.status}">${v.status}</span></td>
+          <td>
+            <div class="action-group">
+              <button class="btn-edit" onclick="startEdit(${idx})">Edit</button>
+              <button class="btn-danger" onclick="deleteVideo(${idx})">Delete</button>
+            </div>
+          </td>
+        </tr>
+      `);
+    }
+  });
+
+  tbody.innerHTML = rowsHtml.join('') || '<tr><td colspan="6" style="text-align:center; padding:20px; color:var(--muted);">No matching videos found.</td></tr>';
+}
+
+function exportCSV() {
+  const headers = ['Video #', 'Scripture Reference', 'Title / Topic', 'Scheduled Date', 'Status'];
+  const lines = [headers.join(',')];
+  videos.forEach(v => {
+    const row = [v.id, v.ref, v.title, v.date, v.status].map(val => `"${String(val || '').replace(/"/g, '""')}"`);
+    lines.push(row.join(','));
+  });
+  const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'Scripture_Tracker_Backup.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importCSV(event) {
   const file = event.target.files[0];
   if (!file) return;
   const reader = new FileReader();
   reader.onload = function(e) {
     const text = e.target.result;
-    const lines = text.split(/\r\n|\n/).filter(l => l.trim().length > 0);
+    const lines = text.split(/\r?\n/).filter(l => l.trim());
     if (lines.length < 2) return;
-    const parsed = [];
+    const imported = [];
     for (let i = 1; i < lines.length; i++) {
-      const cols = lines[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || lines[i].split(',');
-      if (cols && cols.length >= 2) {
-        parsed.push({
-          video: cols[0] ? cols[0].replace(/"/g, '').trim() : '',
-          ref: cols[1] ? cols[1].replace(/"/g, '').trim() : '',
-          title: cols[2] ? cols[2].replace(/"/g, '').trim() : '',
-          date: cols[3] ? cols[3].replace(/"/g, '').trim() : '',
-          status: cols[4] ? cols[4].replace(/"/g, '').trim() : 'Pending'
-        });
-      }
+      const cols = lines[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
+      if (!cols || cols.length < 2) continue;
+      const clean = cols.map(c => c.replace(/^"|"$/g, '').replace(/""/g, '"').trim());
+      if (clean[0].toLowerCase() === 'video #') continue;
+      imported.push({
+        id: clean[0],
+        ref: clean[1],
+        title: clean[2] || '',
+        date: clean[3] || '',
+        status: clean[4] || 'Pending'
+      });
     }
-    if (parsed.length > 0) {
-      videos = parsed;
-      saveVideos();
-      alert(`Imported ${parsed.length} videos successfully!`);
+    if (imported.length > 0) {
+      videos = imported;
+      editingIndex = null;
+      saveVideos(true);
+      alert(`Imported ${imported.length} videos and sorted them automatically!`);
     }
   };
   reader.readAsText(file);
+  event.target.value = '';
 }
 
-function resetToInitialData() {
-  if (confirm("Reset back to initial 269 videos? Any manually entered videos will be replaced.")) {
-    videos = [...INITIAL_DATA];
-    saveVideos();
-  }
-}
-
-const nextNum = "V" + (videos.length + 1);
-document.getElementById('newVid').value = nextNum;
+loadVideos();
 updateStats();
+populateBookFilter();
 renderTable();
+suggestNextIdAndDate();
 </script>
-
 </body>
 </html>
