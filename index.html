@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ministry Scripture Tracker</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
       --bg: #f4f6f9;
@@ -216,14 +215,7 @@
 
 <script>
 const SUPABASE_URL = 'https://guqdudmfcacqyjfeoyxh.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_uyg0ytiNiVTkJCcZ3c918Q_vEK22ru1';
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-  global: {
-    headers: {
-      Authorization: ''
-    }
-  }
-});
+const SUPABASE_KEY = 'sb_publishable_uyg0ytiNiVTkJCcZ3c918Q_vEK22ru1';
 const DB_TABLE = 'ministry_scripture_tracker';
 const DB_ROW_ID = 'main_catalog';
 
@@ -265,81 +257,86 @@ function refreshUI() {
 async function pushToCloud() {
   if (isApplyingRemote) return;
   setSyncBadge('', 'Saving to Cloud...');
-  const { error } = await supabaseClient
-    .from(DB_TABLE)
-    .upsert({
-      id: DB_ROW_ID,
-      payload: videos,
-      updated_at: new Date().toISOString()
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${DB_TABLE}?on_conflict=id`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'resolution=merge-duplicates,return=minimal'
+      },
+      body: JSON.stringify({
+        id: DB_ROW_ID,
+        payload: videos,
+        updated_at: new Date().toISOString()
+      })
     });
-
-  if (error) {
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(`HTTP ${res.status}: ${errText}`);
+    }
+    setSyncBadge('synced', '☁️ Synced Live');
+  } catch (error) {
     console.error('Supabase save error:', error);
     setSyncBadge('error', 'Cloud Sync Error (Saved Locally)');
-  } else {
-    setSyncBadge('synced', '☁️ Synced Live');
+  }
+}
+
+async function pullFromCloud(isBackground = false) {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${DB_TABLE}?id=eq.${DB_ROW_ID}&select=payload,updated_at`, {
+      method: 'GET',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Accept': 'application/json'
+      }
+    });
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(`HTTP ${res.status}: ${errText}`);
+    }
+    const rows = await res.json();
+    if (rows.length > 0 && Array.isArray(rows[0].payload)) {
+      const remoteStr = JSON.stringify(rows[0].payload);
+      const localStr = JSON.stringify(videos);
+      if (remoteStr !== localStr) {
+        isApplyingRemote = true;
+        videos = rows[0].payload;
+        sortVideos();
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(videos));
+        editingIndex = null;
+        refreshUI();
+        isApplyingRemote = false;
+        if (isBackground) {
+          setSyncBadge('synced', '☁️ Updated from Another Device');
+          setTimeout(() => setSyncBadge('synced', '☁️ Synced Live'), 3000);
+          return;
+        }
+      }
+      setSyncBadge('synced', '☁️ Synced Live');
+    } else if (!isBackground) {
+      await pushToCloud();
+    }
+  } catch (error) {
+    console.error('Supabase fetch error:', error);
+    if (!isBackground) setSyncBadge('error', 'Offline / Connection Error');
   }
 }
 
 async function initSync() {
-  // 1. Load cached local data immediately so screen isn't blank
   const saved = localStorage.getItem(STORAGE_KEY);
   if (saved) {
-    try {
-      videos = JSON.parse(saved);
-    } catch (e) {
-      videos = [...DEFAULT_VIDEOS];
-    }
+    try { videos = JSON.parse(saved); } catch (e) { videos = [...DEFAULT_VIDEOS]; }
   } else {
     videos = [...DEFAULT_VIDEOS];
   }
   sortVideos();
   refreshUI();
 
-  // 2. Fetch latest data from Supabase cloud
   setSyncBadge('', 'Connecting to Cloud...');
-  const { data, error } = await supabaseClient
-    .from(DB_TABLE)
-    .select('payload')
-    .eq('id', DB_ROW_ID)
-    .maybeSingle();
+  await pullFromCloud(false);
 
-  if (error) {
-    console.error('Supabase fetch error:', error);
-    setSyncBadge('error', 'Offline / Connection Error');
-  } else if (data && Array.isArray(data.payload)) {
-    // Cloud already has data -> pull it down to this device
-    videos = data.payload;
-    sortVideos();
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(videos));
-    refreshUI();
-    setSyncBadge('synced', '☁️ Synced Live');
-  } else {
-    // Cloud is empty -> upload this device's existing catalog to initialize the cloud
-    await pushToCloud();
-  }
-
-  // 3. Subscribe to live real-time changes from other devices
-  supabaseClient
-    .channel('scripture_tracker_realtime')
-    .on(
-      'postgres_changes',
-      { event: '*', schema: 'public', table: DB_TABLE, filter: `id=eq.${DB_ROW_ID}` },
-      (payload) => {
-        if (payload.new && Array.isArray(payload.new.payload)) {
-          isApplyingRemote = true;
-          videos = payload.new.payload;
-          sortVideos();
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(videos));
-          editingIndex = null;
-          refreshUI();
-          setSyncBadge('synced', '☁️ Updated from Another Device');
-          setTimeout(() => setSyncBadge('synced', '☁️ Synced Live'), 3000);
-          isApplyingRemote = false;
-        }
-      }
-    )
-    .subscribe();
+  setInterval(() => pullFromCloud(true), 5000);
 }
 
 function saveVideos(reRender = true) {
