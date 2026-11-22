@@ -217,7 +217,13 @@
 <script>
 const SUPABASE_URL = 'https://guqdudmfcacqyjfeoyxh.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_uyg0ytiNiVTkJCcZ3c918Q_vEK22ru1';
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  global: {
+    headers: {
+      Authorization: ''
+    }
+  }
+});
 const DB_TABLE = 'ministry_scripture_tracker';
 const DB_ROW_ID = 'main_catalog';
 
